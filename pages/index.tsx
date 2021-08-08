@@ -1,7 +1,8 @@
 import {NextPage, GetStaticProps, GetStaticPropsContext, GetStaticPropsResult} from "next";
-import {initializeApollo} from "../apolloClient";
-import {ApolloQueryResult, gql} from '@apollo/client'
+import {initializeApollo, isLoggedInVar} from "../apolloClient";
+import {ApolloQueryResult, gql, useReactiveVar} from '@apollo/client'
 import {hello} from "../__generated__/hello";
+import {Header} from "../component/Header";
 
 
 export const HELLO = gql`
@@ -11,37 +12,41 @@ export const HELLO = gql`
 `
 
 
-interface IHomeProps {
+interface IIndex {
     id: number
 }
 
 
-const Home: NextPage<IHomeProps> = () => {
+const Index: NextPage<IIndex> = () => {
+
+
+    // const isLoggedIn = useReactiveVar(isLoggedInVar);
     return (
-        <div>
-            Home
-        </div>
+        <>
+            <Header/>
+        </>
     )
+
 }
 
 
-export default Home
+export default Index
 
 
-export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IHomeProps>> => {
-
-    const apolloClient = initializeApollo()
-
-    const { data } : ApolloQueryResult<hello> = await apolloClient.query({
-        query: HELLO,
-    })
-
-
-
-    return {
-        props: {
-            id: 1
-        },
-        revalidate: 10000000 //주기 몇초로 할거임 ?
-    }
-}
+// export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IHomeProps>> => {
+//
+//     const apolloClient = initializeApollo()
+//
+//     const { data } : ApolloQueryResult<hello> = await apolloClient.query({
+//         query: HELLO,
+//     })
+//
+//
+//
+//     return {
+//         props: {
+//             id: 1
+//         },
+//         revalidate: 10000000 //주기 몇초로 할거임 ?
+//     }
+// }

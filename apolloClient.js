@@ -1,25 +1,60 @@
-import { useMemo } from 'react'
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
-import { concatPagination } from '@apollo/client/utilities'
+import {useMemo} from 'react'
+import {ApolloClient, createHttpLink, HttpLink, InMemoryCache, makeVar} from '@apollo/client'
 import merge from 'deepmerge'
 import isEqual from 'lodash/isEqual'
+import {setContext} from "@apollo/client/link/context";
 
-export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
-let apolloClient
+export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
+export const LOCALSTORAGE_TOKEN = "login-token";
+
+
+let apolloClient;
+
+let token = '';
+
+const ISSERVER = typeof window === "undefined";
+
+if (!ISSERVER) {
+    token = localStorage.getItem(LOCALSTORAGE_TOKEN);
+}
+
+export const isLoggedInVar = makeVar(Boolean(token));
+export const authTokenVar = makeVar(token);
+
+
+const httpLink = createHttpLink({
+    uri: process.env.NODE_ENV === 'production' ? 'https://nuber-eats-backend-seok.herokuapp.com/graphql' : "http://localhost:3000/graphql"
+});
+
+const authLink = setContext((_, {headers}) => {
+    return {
+        headers: {
+            ...headers,
+            "x-jwt": authTokenVar() || "",
+        }
+    }
+});
+
 
 function createApolloClient() {
     return new ApolloClient({
         ssrMode: typeof window === 'undefined',
-        link: new HttpLink({
-            uri: 'http://localhost:5000/graphql', // 서버 URL(필수 사항)
-            credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-        }),
+        link: authLink.concat(httpLink),
         cache: new InMemoryCache({
             typePolicies: {
                 Query: {
                     fields: {
-                        allPosts: concatPagination(),
+                        isLoggedIn: {
+                            read() {
+                                return isLoggedInVar();
+                            },
+                        },
+                        token: {
+                            read() {
+                                return authTokenVar();
+                            }
+                        }
                     },
                 },
             },

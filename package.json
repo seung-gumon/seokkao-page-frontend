@@ -12,11 +12,16 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.5",
+    "@badrap/bar-of-progress": "^0.1.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "deepmerge": "^4.2.2",
     "graphql": "^15.5.1",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.12.2"
   },
   "devDependencies": {
     "@types/react": "17.0.16",

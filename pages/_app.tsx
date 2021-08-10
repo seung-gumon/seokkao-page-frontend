@@ -11,16 +11,16 @@ config.autoAddCss = false
 
 const App: NextPage<any> = ({Component, pageProps}) => {
 
-    const progress = new ProgressBar({
-        size: 2,
-        color: "#FCD34D",
-        className: "bar-of-progress",
-        delay: 100,
-    });
-
-    Router.events.on("routeChangeStart", progress.start);
-    Router.events.on("routeChangeComplete", progress.finish);
-    Router.events.on("routeChangeError", progress.finish);
+    // const progress = new ProgressBar({
+    //     size: 2,
+    //     color: "#FCD34D",
+    //     className: "bar-of-progress",
+    //     delay: 100,
+    // });
+    //
+    // Router.events.on("routeChangeStart", progress.start);
+    // Router.events.on("routeChangeComplete", progress.finish);
+    // Router.events.on("routeChangeError", progress.finish);
 
 
     const apolloClient = useApollo(pageProps);

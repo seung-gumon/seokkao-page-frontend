@@ -1,11 +1,19 @@
 /* ./styles/globals.css */
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+
+
+.errorMessage {
+    color: #bf1650;
+}
+
+.errorMessage::before {
+    display: inline;
+    content: "⚠ ";
+}
 
 
 @layer base {
-
     @font-face {
         font-family: 'Nanum Gothic', sans-serif;
         font-weight: 400;
@@ -18,3 +26,4 @@
     }
 
 }
+@tailwind utilities;

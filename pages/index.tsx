@@ -23,7 +23,10 @@ const Index: NextPage<IIndex> = () => {
     // const isLoggedIn = useReactiveVar(isLoggedInVar);
     return (
         <>
-            <Header/>
+            <div className={'mx-auto'} style={{'maxWidth':'1150px'}}>
+                <Header/>
+            </div>
+
         </>
     )
 

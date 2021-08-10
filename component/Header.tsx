@@ -42,8 +42,8 @@ export const Header: NextPage<IHeader> = () => {
     const isLoggedIn = useReactiveVar(isLoggedInVar);
 
     return (
-        <>
-            <div className={'w-full mx-auto sticky flex justify-between px-3 xl:px-0'} style={{'maxWidth': '1150px'}}>
+        <header>
+            <div className={'w-full sticky flex justify-between px-3 xl:px-0'}>
                 <Image src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>
                 <div className="p-4 pb-3 pr-0 flex justify-center items-center">
                     <form onSubmit={handleSubmit(submit)}>
@@ -62,7 +62,9 @@ export const Header: NextPage<IHeader> = () => {
 
                     <div className={'ml-2'}>
                         <Link href={isLoggedIn ? '/me' : '/login'}>
-                            <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>
+                            <a>
+                                <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>
+                            </a>
                         </Link>
                     </div>
                 </div>
@@ -78,7 +80,8 @@ export const Header: NextPage<IHeader> = () => {
                     <h3 className={'text-center flex-1 border-b-4 border-gray-200 text-sm'}>소설</h3>
                 </Link>
             </div>
-        </>
+        </header>
+
 
 
     )

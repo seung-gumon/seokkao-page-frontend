@@ -41,7 +41,7 @@ const Login: NextPage<ILogin> = () => {
     })
 
 
-    const [loginMutation ] = useMutation<login,loginVariables>(LOGIN_MUTATION , {
+    const [loginMutation , {loading}] = useMutation<login,loginVariables>(LOGIN_MUTATION , {
         onCompleted : data => {
             const {
                 Login: {ok, token},
@@ -58,6 +58,10 @@ const Login: NextPage<ILogin> = () => {
 
     const onSubmit = async () => {
         const {email, password} = getValues();
+        if (loading){
+            return
+        };
+        console.log("Loading...")
         await loginMutation({
             variables : {
                 loginInput : {
@@ -129,7 +133,7 @@ const Login: NextPage<ILogin> = () => {
                                     : null;
                             }}
                         />
-                        <input className={"shadow-lg pt-3 pb-3 mt-2 w-full text-white  cursor-pointer transition-colors rounded-full" + (isValid ? ' bg-amber-400' : ' bg-teal-500')} type="submit" value="로그인"/>
+                        <input className={"shadow-lg pt-3 pb-3 mt-2 w-full text-white  cursor-pointer transition-colors rounded-full" + (isValid ? ' bg-amber-400' : ' bg-teal-500')} type="submit" value={!loading ? "로그인" : "Laoding..."}/>
                     </form>
                 </div>
                 <div>

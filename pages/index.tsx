@@ -20,11 +20,12 @@ interface IIndex {
 const Index: NextPage<IIndex> = () => {
 
 
-    // const isLoggedIn = useReactiveVar(isLoggedInVar);
+    const isLoggedIn = useReactiveVar(isLoggedInVar);
     return (
         <>
             <div className={'mx-auto'} style={{'maxWidth':'1150px'}}>
                 <Header/>
+                <span>{isLoggedIn ? "로그인됌" : "로그인 안됌"}</span>
             </div>
 
         </>

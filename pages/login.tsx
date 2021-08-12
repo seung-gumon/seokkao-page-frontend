@@ -2,10 +2,26 @@ import {NextPage} from "next";
 import Image from "next/image";
 import {useForm} from "react-hook-form";
 import Link from 'next/link';
-import {useEffect} from "react";
 import {EMAIL_PATTERN} from "../public/constants";
 import Head from 'next/head';
 import { ErrorMessage } from "@hookform/error-message";
+import {gql, useMutation} from "@apollo/client";
+import {login, loginVariables} from "../__generated__/login";
+import {authTokenVar, isLoggedInVar, LOCALSTORAGE_TOKEN} from "../apolloClient";
+
+
+
+const LOGIN_MUTATION = gql`
+    mutation login($loginInput: LoginInput!) {
+        Login(input: $loginInput) {
+            ok
+            error
+            token
+        }
+    }
+`
+
+
 
 interface ILogin {
 
@@ -25,9 +41,31 @@ const Login: NextPage<ILogin> = () => {
     })
 
 
-    const onSubmit = () => {
-        console.log("trigger LoginFunction")
+    const [loginMutation ] = useMutation<login,loginVariables>(LOGIN_MUTATION , {
+        onCompleted : data => {
+            const {
+                Login: {ok, token},
+            } = data;
+
+            if (ok && token) {
+                localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+                authTokenVar(token);
+                isLoggedInVar(true);
+            }
+
+        }
+    });
+
+    const onSubmit = async () => {
         const {email, password} = getValues();
+        await loginMutation({
+            variables : {
+                loginInput : {
+                    email,
+                    password
+                }
+            }
+        })
     }
 
 

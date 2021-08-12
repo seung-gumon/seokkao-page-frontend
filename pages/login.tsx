@@ -95,7 +95,7 @@ const Login: NextPage<ILogin> = () => {
                     </form>
                 </div>
                 <div>
-                    <p className="mt-4 text-gray-500 text-sm">아이디가 아직 없으신가요 ?
+                    <p className="mt-4 text-gray-500 text-sm">회원이 아니신가요 ?
                         <Link href={'/create-account'}>
                             <a>
                                 <span className={"no-underline text-teal-500 font-base hover:text-teal-400 ml-2 cursor-pointer hover:text-amber-400"}>회원가입 하기</span>

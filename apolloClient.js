@@ -24,7 +24,7 @@ export const authTokenVar = makeVar(token);
 
 
 const httpLink = createHttpLink({
-    uri: process.env.NODE_ENV === 'production' ? 'https://nuber-eats-backend-seok.herokuapp.com/graphql' : "http://localhost:3000/graphql"
+    uri: "http://localhost:5000/graphql"
 });
 
 const authLink = setContext((_, {headers}) => {

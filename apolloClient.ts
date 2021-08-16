@@ -1,5 +1,5 @@
 import {useMemo} from 'react'
-import {ApolloClient, createHttpLink, HttpLink, InMemoryCache, makeVar} from '@apollo/client'
+import {ApolloClient, createHttpLink, InMemoryCache, makeVar, NormalizedCacheObject} from '@apollo/client'
 import merge from 'deepmerge'
 import isEqual from 'lodash/isEqual'
 import {setContext} from "@apollo/client/link/context";
@@ -9,11 +9,12 @@ export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 export const LOCALSTORAGE_TOKEN = "login-token";
 
 
-let apolloClient;
+let apolloClient: ApolloClient<NormalizedCacheObject>;
 
-let token = '';
+let token : any = '';
 
 const ISSERVER = typeof window === "undefined";
+
 
 if (!ISSERVER) {
     token = localStorage.getItem(LOCALSTORAGE_TOKEN);
@@ -72,7 +73,7 @@ export function initializeApollo(initialState = null) {
         const existingCache = _apolloClient.extract()
 
         // Merge the existing cache into data passed from getStaticProps/getServerSideProps
-        const data = merge(initialState, existingCache, {
+        const data = merge(initialState as any, existingCache, {
             // combine arrays using object equality (like in sets)
             arrayMerge: (destinationArray, sourceArray) => [
                 ...sourceArray,
@@ -93,7 +94,7 @@ export function initializeApollo(initialState = null) {
     return _apolloClient
 }
 
-export function addApolloState(client, pageProps) {
+export function addApolloState(client : any, pageProps: any) {
     if (pageProps?.props) {
         pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract()
     }
@@ -101,7 +102,7 @@ export function addApolloState(client, pageProps) {
     return pageProps
 }
 
-export function useApollo(pageProps) {
+export function useApollo(pageProps: any) {
     const state = pageProps[APOLLO_STATE_PROP_NAME]
     const store = useMemo(() => initializeApollo(state), [state])
     return store

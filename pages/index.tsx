@@ -1,15 +1,7 @@
 import {NextPage, GetStaticProps, GetStaticPropsContext, GetStaticPropsResult} from "next";
-import {initializeApollo, isLoggedInVar} from "../apolloClient";
-import {ApolloQueryResult, gql, useReactiveVar} from '@apollo/client'
-import {hello} from "../__generated__/hello";
+import {isLoggedInVar} from "../apolloClient";
+import {useReactiveVar} from '@apollo/client'
 import {Header} from "../component/Header";
-
-
-export const HELLO = gql`
-    query hello {
-        hello
-    }
-`
 
 
 interface IIndex {
@@ -19,32 +11,27 @@ interface IIndex {
 
 const Index: NextPage<IIndex> = () => {
 
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
-    const isLoggedIn = useReactiveVar(isLoggedInVar);
+
     return (
         <>
-            <div className={'mx-auto'} style={{'maxWidth':'1150px'}}>
-                <Header/>
-                <span>{isLoggedIn ? "로그인됌" : "로그인 안됌"}</span>
+            <div className={'mx-auto'} style={{'maxWidth': '1150px'}}>
+                <Header
+                    isLoggedIn={isLoggedIn}
+                />
             </div>
-
         </>
     )
-
 }
 
 
 export default Index
 
 
-// export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IHomeProps>> => {
+// export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IIndex>> => {
 //
 //     const apolloClient = initializeApollo()
-//
-//     const { data } : ApolloQueryResult<hello> = await apolloClient.query({
-//         query: HELLO,
-//     })
-//
 //
 //
 //     return {

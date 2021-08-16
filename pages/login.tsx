@@ -8,6 +8,9 @@ import { ErrorMessage } from "@hookform/error-message";
 import {gql, useMutation} from "@apollo/client";
 import {login, loginVariables} from "../__generated__/login";
 import {authTokenVar, isLoggedInVar, LOCALSTORAGE_TOKEN} from "../apolloClient";
+import {useRouter} from "next/router";
+
+
 
 
 
@@ -35,6 +38,8 @@ export interface ILoginForm {
 
 const Login: NextPage<ILogin> = () => {
 
+    const router = useRouter();
+
     const {register, handleSubmit, getValues, formState: {errors, isValid}} = useForm<ILoginForm>({
         mode : "onChange",
         criteriaMode : 'all'
@@ -51,6 +56,9 @@ const Login: NextPage<ILogin> = () => {
                 localStorage.setItem(LOCALSTORAGE_TOKEN, token);
                 authTokenVar(token);
                 isLoggedInVar(true);
+                return router.push("/")
+            } else {
+                return alert("비밀번호가 일치 하지 않습니다.")
             }
 
         }

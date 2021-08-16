@@ -13,7 +13,7 @@ import {isLoggedInVar} from "../apolloClient";
 
 
 interface IHeader {
-
+    isLoggedIn:boolean;
 }
 
 
@@ -21,7 +21,7 @@ interface IForm {
     keyword: string;
 }
 
-export const Header: NextPage<IHeader> = () => {
+export const Header: NextPage<IHeader> = ({isLoggedIn}) => {
 
 
     const {register, handleSubmit, getValues, formState,} = useForm<IForm>({
@@ -38,8 +38,14 @@ export const Header: NextPage<IHeader> = () => {
     const query = router.query.query;
 
 
+    const onClickWay = () =>{
+        if (isLoggedIn) {
+            return router.push("/me");
+        } else {
+            return router.push("/login");
+        }
+    }
 
-    const isLoggedIn = useReactiveVar(isLoggedInVar);
 
     return (
         <header>
@@ -60,12 +66,8 @@ export const Header: NextPage<IHeader> = () => {
                         </div>
                     </form>
 
-                    <div className={'ml-2'}>
-                        <Link href={isLoggedIn ? '/me' : '/login'}>
-                            <a>
-                                <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>
-                            </a>
-                        </Link>
+                    <div className={'ml-2'} onClick={() => onClickWay()}>
+                        <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>
                     </div>
                 </div>
             </div>
@@ -81,8 +83,7 @@ export const Header: NextPage<IHeader> = () => {
                 </Link>
             </div>
         </header>
-
-
-
     )
 }
+
+

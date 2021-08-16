@@ -1,7 +1,9 @@
 import {NextPage, GetStaticProps, GetStaticPropsContext, GetStaticPropsResult} from "next";
-import {isLoggedInVar} from "../apolloClient";
-import {useReactiveVar} from '@apollo/client'
 import {Header} from "../component/Header";
+import SubHeader from "../component/SubHeader";
+import Head from "next/head";
+import React from "react";
+import Slick from "../component/Slick";
 
 
 interface IIndex {
@@ -11,15 +13,19 @@ interface IIndex {
 
 const Index: NextPage<IIndex> = () => {
 
-    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+    // const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
 
     return (
         <>
+            <Head>
+                <title>홈 | 석카오페이지</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <div className={'mx-auto'} style={{'maxWidth': '1150px'}}>
-                <Header
-                    isLoggedIn={isLoggedIn}
-                />
+                <Header/>
+                <SubHeader/>
+                <Slick/>
             </div>
         </>
     )

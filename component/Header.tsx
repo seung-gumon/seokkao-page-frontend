@@ -13,7 +13,7 @@ import {isLoggedInVar} from "../apolloClient";
 
 
 interface IHeader {
-    isLoggedIn:boolean;
+
 }
 
 
@@ -21,13 +21,14 @@ interface IForm {
     keyword: string;
 }
 
-export const Header: NextPage<IHeader> = ({isLoggedIn}) => {
+export const Header: NextPage<IHeader> = () => {
 
 
     const {register, handleSubmit, getValues, formState,} = useForm<IForm>({
         mode: 'onChange'
     })
 
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
     const submit = () => {
         const {keyword} = getValues();
@@ -35,7 +36,6 @@ export const Header: NextPage<IHeader> = ({isLoggedIn}) => {
     }
 
     const router = useRouter();
-    const query = router.query.query;
 
 
     const onClickWay = () =>{
@@ -48,9 +48,13 @@ export const Header: NextPage<IHeader> = ({isLoggedIn}) => {
 
 
     return (
-        <header>
-            <div className={'w-full sticky flex justify-between px-3 xl:px-0'}>
-                <Image src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>
+        <header className={'bg-white'}>
+            <div className={'w-full sticky flex justify-between px-3 items-center'}>
+                <Link href={"/"}>
+                    <a className={'mt-3'}>
+                        <Image src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>
+                    </a>
+                </Link>
                 <div className="p-4 pb-3 pr-0 flex justify-center items-center">
                     <form onSubmit={handleSubmit(submit)}>
                         <div className="bg-white flex items-center rounded-full border border-gray-200">
@@ -70,17 +74,6 @@ export const Header: NextPage<IHeader> = ({isLoggedIn}) => {
                         <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>
                     </div>
                 </div>
-            </div>
-            <div className={'flex w-full'}>
-                <Link href={"/"}>
-                    <h3 className={'text-center flex-1 border-b-4 border-gray-200 text-sm' + (!query ? ' border-amber-200' : ' border-gray-200')}>홈</h3>
-                </Link>
-                <Link href={"/webtoon"}>
-                    <h3 className={'text-center flex-1 border-b-4 border-gray-200 text-sm'}>웹툰</h3>
-                </Link>
-                <Link href={'novel'}>
-                    <h3 className={'text-center flex-1 border-b-4 border-gray-200 text-sm'}>소설</h3>
-                </Link>
             </div>
         </header>
     )

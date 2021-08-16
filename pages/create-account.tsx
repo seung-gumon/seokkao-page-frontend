@@ -84,7 +84,7 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
       style={{ maxWidth: "1150px" }}
     >
       <Head>
-        <title>Create Account | SeokkaoPage</title>
+        <title>Create Account | 석카오페이지</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Link href={"/"}>

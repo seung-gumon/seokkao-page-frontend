@@ -7,6 +7,7 @@ import {config} from '@fortawesome/fontawesome-svg-core';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from 'next/router';
 
+
 config.autoAddCss = false
 
 const App: NextPage<any> = ({Component, pageProps}) => {

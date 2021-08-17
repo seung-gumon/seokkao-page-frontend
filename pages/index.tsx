@@ -16,6 +16,8 @@ import {initializeApollo} from "../apolloClient";
 import MiddleCategory from "../component/MiddleCategory";
 import OrderContainer from "../component/OrderContainer";
 import ContentsContainer from "../component/ContentsContainer";
+import AdBanner from "../component/AdBanner";
+import CommonListContentsBox from "../component/CommonListContentsBox";
 
 interface IIndex {
     id: number
@@ -42,6 +44,9 @@ const Index: NextPage<IIndex> = () => {
                 <MiddleCategory/>
                 <OrderContainer/>
                 <ContentsContainer/>
+                <AdBanner/>
+                <CommonListContentsBox/>
+                <CommonListContentsBox/>
             </div>
         </>
     )

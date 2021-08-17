@@ -41,33 +41,33 @@ export const settings = {
 };
 
 
-const Slick :NextPage<ISlick> = ({}) => {
+const AdBanner :NextPage<ISlick> = ({}) => {
 
 
     return (
-        <div className={'w-full mt-3'}>
+        <div className={'w-full my-2 px-7 py-2 bg-white'}>
             <Slider {...settings}>
                 <div>
-                    <h3 className={'w-full bg-red-500'} style={{'height':'200px'}}>1</h3>
+                    <h3 className={'w-full bg-red-500'} style={{'height':'100px'}}>1</h3>
                 </div>
                 <div>
-                    <h3 className={'w-full bg-amber-500'} style={{'height':'200px'}}>2</h3>
+                    <h3 className={'w-full bg-amber-500'} style={{'height':'100px'}}>2</h3>
                 </div>
                 <div>
-                    <h3 className={'w-full bg-pink-500'} style={{'height':'200px'}}>3</h3>
+                    <h3 className={'w-full bg-pink-500'} style={{'height':'100px'}}>3</h3>
                 </div>
                 <div>
-                    <h3 className={'w-full bg-green-500'} style={{'height':'200px'}}>4</h3>
+                    <h3 className={'w-full bg-green-500'} style={{'height':'100px'}}>4</h3>
                 </div>
                 <div>
-                    <h3 className={'w-full bg-blue-500'} style={{'height':'200px'}}>5</h3>
+                    <h3 className={'w-full bg-blue-500'} style={{'height':'100px'}}>5</h3>
                 </div>
                 <div>
-                    <h3 className={'w-full bg-purple-500'} style={{'height':'200px'}}>6</h3>
+                    <h3 className={'w-full bg-purple-500'} style={{'height':'100px'}}>6</h3>
                 </div>
             </Slider>
         </div>
     );
 }
 
-export default Slick
+export default AdBanner

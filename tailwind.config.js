@@ -13,7 +13,11 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      boxShadow: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
+    }
   },
   plugins: [],
 }
+
+

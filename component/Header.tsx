@@ -30,9 +30,10 @@ export const Header: NextPage<IHeader> = () => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
+
+
     const submit = () => {
         const {keyword} = getValues();
-        console.log(keyword);
     }
 
     const router = useRouter();

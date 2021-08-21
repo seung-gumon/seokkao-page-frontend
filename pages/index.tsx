@@ -18,6 +18,9 @@ import OrderContainer from "../component/OrderContainer";
 import ContentsContainer from "../component/ContentsContainer";
 import AdBanner from "../component/AdBanner";
 import CommonListContentsBox from "../component/CommonListContentsBox";
+import {useQuery} from "@apollo/client";
+import {meQuery} from "../__generated__/meQuery";
+import {ME_QUERY} from "./me";
 
 interface IIndex {
     id: number
@@ -26,9 +29,14 @@ interface IIndex {
 
 const Index: NextPage<IIndex> = () => {
 
-    // const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
-
+    useQuery<meQuery>(ME_QUERY , {
+        onError : error => {
+            if (error) {
+                localStorage.removeItem('login-token');
+            }
+        }
+    });
 
 
     return (
@@ -45,8 +53,18 @@ const Index: NextPage<IIndex> = () => {
                 <OrderContainer/>
                 <ContentsContainer/>
                 <AdBanner/>
-                <CommonListContentsBox/>
-                <CommonListContentsBox/>
+                <CommonListContentsBox
+                    title={'기다리면 무료 웹툰'}
+                />
+                <CommonListContentsBox
+                    title={'인기 웹툰'}
+                />
+                <CommonListContentsBox
+                    title={'기다리면 무료 소설'}
+                />
+                <CommonListContentsBox
+                    title={'인기 소설'}
+                />
             </div>
         </>
     )

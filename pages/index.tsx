@@ -3,8 +3,6 @@ import {
     GetStaticProps,
     GetStaticPropsContext,
     GetStaticPropsResult,
-    GetServerSideProps,
-    GetServerSidePropsContext, GetServerSidePropsResult
 } from "next";
 import {Header} from "../component/Header";
 import SubHeader from "../component/SubHeader";
@@ -18,16 +16,33 @@ import OrderContainer from "../component/OrderContainer";
 import ContentsContainer from "../component/ContentsContainer";
 import AdBanner from "../component/AdBanner";
 import CommonListContentsBox from "../component/CommonListContentsBox";
-import {useQuery} from "@apollo/client";
+import {gql,useQuery} from "@apollo/client";
 import {meQuery} from "../__generated__/meQuery";
 import {ME_QUERY} from "./me";
+import {SERIES_FRAGMENT} from "../fragments";
+import {mainPage} from "../__generated__/mainPage";
+
 
 interface IIndex {
-    id: number
+    mainPageData : mainPage
 }
 
 
-const Index: NextPage<IIndex> = () => {
+
+
+const MainPageQuery = gql`
+    query mainPage {
+        mainBanner {
+            ...SeriesParts
+        }
+    }
+    ${SERIES_FRAGMENT}
+`
+
+
+const Index: NextPage<IIndex> = ({mainPageData}) => {
+
+
 
 
     useQuery<meQuery>(ME_QUERY , {
@@ -48,7 +63,9 @@ const Index: NextPage<IIndex> = () => {
             <div className={'mx-auto'} style={{'maxWidth': '1150px'}}>
                 <Header/>
                 <SubHeader/>
-                <Slick/>
+                <Slick
+                    mainBanner={mainPageData.mainBanner}
+                />
                 <MiddleCategory/>
                 <OrderContainer/>
                 <ContentsContainer/>
@@ -74,14 +91,21 @@ const Index: NextPage<IIndex> = () => {
 export default Index
 
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IIndex>> => {
+export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IIndex>> => {
 
     const apolloClient = initializeApollo();
+
+    const {data} = await apolloClient.query<mainPage>({
+        query: MainPageQuery,
+    });
+
+
 
 
     return {
         props: {
-            id: 1
+            mainPageData : data
         },
+        revalidate : 40000
     }
 }

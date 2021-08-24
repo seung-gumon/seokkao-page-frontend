@@ -60,6 +60,11 @@ body {
         src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'), url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');
     }
 
+    .mainBannerInnerShadow {
+        -webkit-box-shadow: inset 4px -29px 28px -3px rgba(0,0,0,0.27);
+        box-shadow: inset 4px -29px 28px -3px rgba(0,0,0,0.27);
+    }
+
 
     * {
         font-family: 'Noto Sans KR';

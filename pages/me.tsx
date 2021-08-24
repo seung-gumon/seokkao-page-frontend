@@ -39,7 +39,7 @@ const me: NextPage<IMe> = () => {
         onError: error => {
             if (error) {
                 localStorage.removeItem('login-token');
-                return router.push("/");
+                return router.push("/login");
             }
         }
     });
@@ -49,7 +49,7 @@ const me: NextPage<IMe> = () => {
         const checkLoginToken = async () => {
             const token = localStorage.getItem('login-token');
             if (!token) {
-                return router.push("/");
+                return router.push("/login");
             }
             return;
         }

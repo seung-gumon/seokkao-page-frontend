@@ -6,6 +6,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import {config} from '@fortawesome/fontawesome-svg-core';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from 'next/router';
+import Head from 'next/head';
 
 
 config.autoAddCss = false
@@ -28,9 +29,15 @@ const App: NextPage<any> = ({Component, pageProps}) => {
 
 
     return (
-        <ApolloProvider client={apolloClient}>
-            <Component {...pageProps} />
-        </ApolloProvider>
+        <>
+            <ApolloProvider client={apolloClient}>
+                <Head>
+                    <meta name="viewport" content={'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0'}/>
+                </Head>
+                <Component {...pageProps} />
+            </ApolloProvider>
+        </>
+
     )
 }
 

@@ -53,6 +53,8 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
         }
     });
 
+    const [today, setToday] = useState<string>('월');
+
 
     return (
         <>
@@ -67,8 +69,13 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
                     mainBanner={mainPageData.mainBanner}
                 />
                 <MiddleCategory/>
-                <OrderContainer/>
-                <ContentsContainer/>
+                <OrderContainer
+                    today={today}
+                    setToday={setToday}
+                />
+                <ContentsContainer
+                    today={today}
+                />
                 <AdBanner/>
                 <CommonListContentsBox
                     title={'기다리면 무료 웹툰'}

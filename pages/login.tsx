@@ -4,14 +4,11 @@ import {useForm} from "react-hook-form";
 import Link from 'next/link';
 import {EMAIL_PATTERN} from "../public/constants";
 import Head from 'next/head';
-import { ErrorMessage } from "@hookform/error-message";
+import {ErrorMessage} from "@hookform/error-message";
 import {gql, useMutation} from "@apollo/client";
 import {login, loginVariables} from "../__generated__/login";
 import {authTokenVar, isLoggedInVar, LOCALSTORAGE_TOKEN} from "../apolloClient";
 import {useRouter} from "next/router";
-
-
-
 
 
 const LOGIN_MUTATION = gql`
@@ -23,7 +20,6 @@ const LOGIN_MUTATION = gql`
         }
     }
 `
-
 
 
 interface ILogin {
@@ -41,13 +37,13 @@ const Login: NextPage<ILogin> = () => {
     const router = useRouter();
 
     const {register, handleSubmit, getValues, formState: {errors, isValid}} = useForm<ILoginForm>({
-        mode : "onChange",
-        criteriaMode : 'all'
+        mode: "onChange",
+        criteriaMode: 'all'
     })
 
 
-    const [loginMutation , {loading}] = useMutation<login,loginVariables>(LOGIN_MUTATION , {
-        onCompleted : data => {
+    const [loginMutation, {loading}] = useMutation<login, loginVariables>(LOGIN_MUTATION, {
+        onCompleted: data => {
             const {
                 Login: {ok, token},
             } = data;
@@ -66,12 +62,12 @@ const Login: NextPage<ILogin> = () => {
 
     const onSubmit = async () => {
         const {email, password} = getValues();
-        if (loading){
+        if (loading) {
             return
         }
         await loginMutation({
-            variables : {
-                loginInput : {
+            variables: {
+                loginInput: {
                     email,
                     password
                 }
@@ -80,17 +76,16 @@ const Login: NextPage<ILogin> = () => {
     }
 
 
-
-
     return (
         <div className={'w-full mx-auto flex flex-col items-center my-3 lg:w-3/12'} style={{'maxWidth': '1150px'}}>
             <Head>
                 <title>Login | 석카오페이지</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
             <Link href={'/'}>
                 <a>
-                    <Image className={'cursor-pointer'} src={"/logo-kakaopage.svg"} alt={'kakaoPage'} width={'130px'} height={'29px'}/>
+                    <Image className={'cursor-pointer'} src={"/logo-kakaopage.svg"} alt={'kakaoPage'} width={'130px'}
+                           height={'29px'}/>
                 </a>
             </Link>
             <div className="w-full flex flex-col bg-cover bg-center justify-content bg-white p-6 rounded pt-8 pb-8">
@@ -112,7 +107,7 @@ const Login: NextPage<ILogin> = () => {
                         <ErrorMessage
                             errors={errors}
                             name="email"
-                            render={({ messages }) => {
+                            render={({messages}) => {
                                 return messages
                                     ? Object.entries(messages).map(([type, message]) => (
                                         <p className={'errorMessage text-sm'} key={type}>{message}</p>
@@ -132,7 +127,7 @@ const Login: NextPage<ILogin> = () => {
                         <ErrorMessage
                             errors={errors}
                             name="password"
-                            render={({ messages }) => {
+                            render={({messages}) => {
                                 return messages
                                     ? Object.entries(messages).map(([type, message]) => (
                                         <p className={'errorMessage text-sm'} key={type}>{message}</p>
@@ -140,14 +135,17 @@ const Login: NextPage<ILogin> = () => {
                                     : null;
                             }}
                         />
-                        <input className={"shadow-lg pt-3 pb-3 mt-2 w-full text-white  cursor-pointer transition-colors rounded-full" + (isValid ? ' bg-amber-400' : ' bg-teal-500')} type="submit" value={!loading ? "로그인" : "Laoding..."}/>
+                        <input
+                            className={"shadow-lg pt-3 pb-3 mt-2 w-full cursor-pointer transition-colors rounded-full" + (isValid ? ' bg-amber-400' : ' bg-teal-500') + (isValid ? ' text-white' : ' text-blueGray-300')}
+                            type="submit" value={!loading ? "로그인" : "Loading..."}/>
                     </form>
                 </div>
                 <div>
                     <p className="mt-4 text-gray-500 text-sm">회원이 아니신가요 ?
                         <Link href={'/create-account'}>
                             <a>
-                                <span className={"no-underline text-teal-500 font-base hover:text-teal-400 ml-2 cursor-pointer hover:text-amber-400"}>회원가입 하기</span>
+                                <span
+                                    className={"no-underline text-teal-500 font-base hover:text-teal-400 ml-2 cursor-pointer hover:text-amber-400"}>회원가입 하기</span>
                             </a>
                         </Link>
                     </p>

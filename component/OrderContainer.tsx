@@ -2,18 +2,29 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import moment from "moment";
+import {NextPage} from "next";
 
 
-const OrderContainer = () => {
+
+interface IOrderContainer {
+    today : string,
+    setToday : Function
+}
+
+const OrderContainer : NextPage<IOrderContainer> =
+    ({
+        today,
+        setToday
+     }) => {
 
 
     const [genre , setGenre] = useState<"Cartoon" | "Novel">("Novel");
 
-    const [todayDay, setTodayDay] = useState<string>('월');
+
 
     useEffect(() => {
         const today = moment().format('dddd');
-        setTodayDay(today);
+        setToday(today);
     },[])
 
     return (
@@ -27,15 +38,15 @@ const OrderContainer = () => {
                 </li>
             </ul>
             <ul className={'flex items-center'}>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "월요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('월요일')}>월</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "화요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('화요일')}>화</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "수요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('수요일')}>수</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "목요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('목요일')}>목</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "금요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('금요일')}>금</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "토요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('토요일')}>토</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "일요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setTodayDay('일요일')}>일</li>
-                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (todayDay === "complete" ? ' border-amber-400' : ' border-gray-200')}
-                    onClick={() => setTodayDay('complete')}>완결
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "월요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('월요일')}>월</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "화요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('화요일')}>화</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "수요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('수요일')}>수</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "목요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('목요일')}>목</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "금요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('금요일')}>금</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "토요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('토요일')}>토</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "일요일" ? ' border-amber-400' : ' border-gray-200')} onClick={() => setToday('일요일')}>일</li>
+                <li className={'text-sm flex-1 text-center border-b-4 border-gray-200' + (today === "complete" ? ' border-amber-400' : ' border-gray-200')}
+                    onClick={() => setToday('complete')}>완결
                 </li>
             </ul>
         </div>

@@ -219,8 +219,8 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
             />
             <input
               className={
-                "shadow-lg pt-3 pb-3 mt-2 w-full text-white  cursor-pointer transition-colors rounded-full" +
-                (isValid ? " bg-amber-400" : " bg-teal-500")
+                "shadow-lg pt-3 pb-3 mt-2 w-full cursor-pointer transition-colors rounded-full" +
+                + (isValid ? ' bg-amber-400' : ' bg-teal-500') + (isValid ? ' text-white' : ' text-blueGray-300')
               }
               type="button"
               value="회원가입 완료!"

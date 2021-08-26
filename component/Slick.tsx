@@ -1,4 +1,5 @@
 import {NextPage} from "next";
+import React from "react";
 import Slider from "react-slick";
 import {mainPage_mainBanner} from "../__generated__/mainPage";
 
@@ -53,19 +54,19 @@ const Slick: NextPage<ISlick> =
                 <Slider {...settings}>
                     {mainBanner.map((banner) => {
                         return (
-                            <>
+                            <React.Fragment key={banner.id}>
                                 <div
-                                    className={'mainBannerInnerShadow relative w-full bg-gray-400 flex items-center justify-center flex-column bg-contain'}
-                                    style={{backgroundImage: `url(${banner.thumbnail})`}}>
-                                    <img src={banner.thumbnail} alt={banner.name}/>
+                                    className={'mainBannerInnerShadow w-full bg-center h-72 relative w-full bg-gray-400 flex items-center justify-center flex-column bg-contain'}
+                                    style={{backgroundImage: `url(${banner.thumbnail})`}}
+                                >
                                     <div className={'absolute z-30 bottom-0 text-2xl left-0 px-3 pb-3 text-white'}>
                                         <h6>{banner.name}</h6>
                                     </div>
                                 </div>
                                 <div>
-                                    <p className={'bg-yellow-400 px-3 py-1.5 text-white font-normal text-center w-full whitespace-nowrap overflow-hidden overflow-ellipsis'}>{banner.description}</p>
+                                    <p className={'bg-yellow-400 px-3 py-1.5 text-xs md:text-lg text-white font-normal text-center w-full whitespace-nowrap overflow-hidden overflow-ellipsis'}>{banner.description}</p>
                                 </div>
-                            </>
+                            </React.Fragment>
                         )
                     })}
                 </Slider>

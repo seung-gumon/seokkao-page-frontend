@@ -1,14 +1,17 @@
 import {NextPage} from "next";
 import CommonContentsBox from "./CommonContentsBox";
+import {mainPage_orderByPopular_cartoon} from "../__generated__/mainPage";
 
 interface IListContents {
-    title : string
+    title : string,
+    fetchData : mainPage_orderByPopular_cartoon[]
 }
 
 
 const CommonListContentsBox: NextPage<IListContents> =
     ({
-    title
+    title,
+         fetchData
      }) => {
         return (
             <div className={'bg-white p-2 mt-1'}>
@@ -16,7 +19,16 @@ const CommonListContentsBox: NextPage<IListContents> =
                     <span>{title}</span>
                     <span className={'text-xs text-gray-400 cursor-pointer'}>더보기 &rarr;</span>
                 </div>
-                <CommonContentsBox/>
+                {
+                    fetchData.map((content) => {
+                        return (
+                            <CommonContentsBox
+                                key={content.id}
+                                content={content}
+                            />
+                        )
+                    })
+                }
             </div>
         )
     }

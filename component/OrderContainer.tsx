@@ -8,17 +8,21 @@ import {NextPage} from "next";
 
 interface IOrderContainer {
     today : string,
-    setToday : Function
+    setToday : Function,
+    genre : string,
+    setGenre : Function
 }
 
 const OrderContainer : NextPage<IOrderContainer> =
     ({
         today,
-        setToday
+        setToday,
+        genre,
+        setGenre
      }) => {
 
 
-    const [genre , setGenre] = useState<"Cartoon" | "Novel">("Novel");
+
 
 
 

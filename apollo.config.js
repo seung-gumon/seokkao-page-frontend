@@ -1,6 +1,6 @@
 module.exports = {
     client: {
-        includes: ["./pages/**/*.tsx","./fragments.ts"],
+        includes: ["./pages/**/*.tsx","./fragments.ts","./component/**/*.tsx"],
         tagName: "gql",
         service: {
             name: 'seokkao-page',

@@ -74,4 +74,4 @@ const Slick: NextPage<ISlick> =
         );
     }
 
-export default Slick
+export default Slick;

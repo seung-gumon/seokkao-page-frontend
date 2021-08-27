@@ -13,4 +13,6 @@ export interface SeriesParts {
   name: string;
   thumbnail: string;
   description: string;
+  view: number;
+  like: number;
 }

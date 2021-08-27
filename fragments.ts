@@ -6,5 +6,7 @@ export const SERIES_FRAGMENT = gql`
         name
         thumbnail
         description
+        view
+        like
     }
 `

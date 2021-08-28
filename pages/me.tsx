@@ -1,20 +1,12 @@
-import React from 'react';
-import {useEffect} from "react";
+import React, {useEffect} from 'react';
 import {gql, useQuery} from "@apollo/client";
-import {
-    NextPage,
-    GetServerSideProps,
-    GetStaticProps,
-    GetStaticPropsContext,
-    GetStaticPropsResult,
-    GetServerSidePropsContext
-} from "next";
+import {NextPage} from "next";
 import {Header} from "../component/Header";
 import {meQuery} from "../__generated__/meQuery";
 import Head from "next/head";
-import {initializeApollo} from "../apolloClient";
 import Link from 'next/link';
 import {useRouter} from 'next/router'
+import {UserRole} from "../__generated__/globalTypes";
 
 interface IMe {
 }
@@ -73,9 +65,9 @@ const me: NextPage<IMe> = () => {
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
 
-            <div className={'mx-auto'} style={{'maxWidth': '1150px'}}>
+            <div className={'mx-auto'} style={{'maxWidth': '950px'}}>
                 <Header/>
-                <div className={'mt-3 bg-white p-6 md:p-20'}>
+                <div className={'bg-white p-6 md:p-20'}>
                     <h3 className={'text-2xl text-gray-500'}><span
                         className={'text-black font-semibold'}>{data?.me.name}</span>님의 계정정보 </h3>
                     <div className={'flex w-full mt-9 flex-col'}>
@@ -97,7 +89,19 @@ const me: NextPage<IMe> = () => {
                                 </div>
                             </a>
                         </Link>
-                        <span className={'text-sm mt-1.5 text-gray-400'}>석카오페이지 닉네임과 프로필 사진을 설정합니다.</span>
+                        <span className={'text-sm my-1.5 text-gray-400'}>석카오페이지 닉네임과 프로필 사진을 설정합니다.</span>
+                        {
+                            data?.me.role !== UserRole.User &&
+                            <Link href={"/my-work"}>
+                                <a>
+                                    <div
+                                        className={'flex border border-solid border-gray-200 items-center justify-between '}>
+                                        <div className={'text-gray-800 py-2 px-4 text-sm'}>내 작품 보기</div>
+                                        <div className={'text-gray-800 py-2 px-4 text-sm'}>&rarr;</div>
+                                    </div>
+                                </a>
+                            </Link>
+                        }
                     </div>
 
                 </div>

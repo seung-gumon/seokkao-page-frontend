@@ -77,7 +77,7 @@ const Login: NextPage<ILogin> = () => {
 
 
     return (
-        <div className={'w-full mx-auto flex flex-col items-center my-3 lg:w-3/12'} style={{'maxWidth': '1150px'}}>
+        <div className={'bg-white pt-6 w-full mx-auto flex flex-col items-center mb-3 lg:w-3/12'} style={{'maxWidth': '950px'}}>
             <Head>
                 <title>Login | 석카오페이지</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>

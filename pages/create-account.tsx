@@ -49,7 +49,7 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
 
   const router = useRouter();
 
-  const [createAccountMutation] = useMutation<createAccount, createAccountVariables>(CREATE_ACCOUNT_MUTATION, {
+  const [createAccountMutation , loading] = useMutation<createAccount, createAccountVariables>(CREATE_ACCOUNT_MUTATION, {
     onCompleted: data => {
       const {createAccount: {ok}} = data;
       if (ok) {
@@ -60,6 +60,8 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
       }
     }
   })
+
+
 
   const onSubmit = async () => {
     const {email, password, role, name, phoneNumber} = getValues();
@@ -80,7 +82,7 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
 
   return (
     <div
-      className={"w-full mx-auto flex flex-col items-center my-3 lg:w-6/12"}
+      className={"w-full mx-auto flex flex-col items-center mb-3 lg:w-6/12 bg-white pt-6"}
       style={{ maxWidth: "1150px" }}
     >
       <Head>
@@ -219,12 +221,10 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
             />
             <input
               className={
-                "shadow-lg pt-3 pb-3 mt-2 w-full cursor-pointer transition-colors rounded-full" +
-                + (isValid ? ' bg-amber-400' : ' bg-teal-500') + (isValid ? ' text-white' : ' text-blueGray-300')
+                "shadow-lg pt-3 pb-3 mt-2 w-full cursor-pointer transition-colors rounded-full " + (isValid ? ' text-white bg-amber-400 ' : ' text-blueGray-300 bg-teal-500')
               }
-              type="button"
-              value="회원가입 완료!"
-              onClick={() => onSubmit()}
+              type="submit"
+              value={!loading.loading ? "회원가입 완료!" : "Loading..."}
             />
           </form>
         </div>

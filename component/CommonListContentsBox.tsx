@@ -3,14 +3,14 @@ import CommonContentsBox from "./CommonContentsBox";
 import {mainPage_orderByPopular_cartoon} from "../__generated__/mainPage";
 
 interface IListContents {
-    title : string,
-    fetchData : mainPage_orderByPopular_cartoon[]
+    title: string,
+    fetchData: mainPage_orderByPopular_cartoon[]
 }
 
 
 const CommonListContentsBox: NextPage<IListContents> =
     ({
-    title,
+         title,
          fetchData
      }) => {
         return (

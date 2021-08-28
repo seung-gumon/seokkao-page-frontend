@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {gql, useQuery} from "@apollo/client";
+import {gql, useQuery, useReactiveVar} from "@apollo/client";
 import {NextPage} from "next";
 import {Header} from "../component/Header";
 import {meQuery} from "../__generated__/meQuery";
@@ -7,6 +7,8 @@ import Head from "next/head";
 import Link from 'next/link';
 import {useRouter} from 'next/router'
 import {UserRole} from "../__generated__/globalTypes";
+import {isLoggedInVar} from "../apolloClient";
+import PleaseLogin from "../component/PleaseLogin";
 
 interface IMe {
 }
@@ -25,35 +27,29 @@ export const ME_QUERY = gql`
 
 const me: NextPage<IMe> = () => {
 
-
-    const router = useRouter();
-    const {data, loading} = useQuery<meQuery>(ME_QUERY, {
-        onError: error => {
-            if (error) {
-                localStorage.removeItem('login-token');
-                return router.push("/login");
-            }
-        }
-    });
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
 
-    useEffect(() => {
-        const checkLoginToken = async () => {
-            const token = localStorage.getItem('login-token');
-            if (!token) {
-                return router.push("/login");
-            }
-            return;
-        }
-        (async () => {
-            await checkLoginToken();
-        })();
-    }, [])
+    const {data ,loading, error} = useQuery<meQuery>(ME_QUERY);
 
 
     if (loading) {
         return (
-            <div>Loading...</div>
+            <>
+                <Header/>
+                <div className={'flex flex-col h-screen'}>
+                    <div className={'w-full h-full flex items-center justify-center'}>
+                        Loading...
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+
+    if (!isLoggedIn || error || loading) {
+        return (
+            <PleaseLogin/>
         )
     }
 

@@ -7,17 +7,12 @@
 // GraphQL query operation: mySeries
 // ====================================================
 
-export interface mySeries_mySeries_writer {
-  __typename: "User";
-  name: string;
-}
-
-export interface mySeries_mySeries_category {
+export interface mySeries_mySeries_series_category {
   __typename: "Category";
   categoryName: string;
 }
 
-export interface mySeries_mySeries {
+export interface mySeries_mySeries_series {
   __typename: "Series";
   id: number;
   name: string;
@@ -25,10 +20,15 @@ export interface mySeries_mySeries {
   description: string;
   view: number;
   like: number;
-  writer: mySeries_mySeries_writer;
-  category: mySeries_mySeries_category;
+  category: mySeries_mySeries_series_category;
+}
+
+export interface mySeries_mySeries {
+  __typename: "MySeriesOutputDto";
+  name: string;
+  series: mySeries_mySeries_series[];
 }
 
 export interface mySeries {
-  mySeries: mySeries_mySeries[];
+  mySeries: mySeries_mySeries;
 }

@@ -7,7 +7,7 @@ import {
 import {Header} from "../component/Header";
 import SubHeader from "../component/SubHeader";
 import Head from "next/head";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Slick from "../component/Slick";
 import 'moment/locale/ko';
 import {initializeApollo} from "../apolloClient";

@@ -20,12 +20,12 @@ import {addUnit} from "../public/constants";
 export const MY_SERIES = gql`
     query mySeries {
         mySeries {
-            ...SeriesParts
-            writer {
-                name
-            }
-            category {
-                categoryName
+            name
+            series {
+                ...SeriesParts
+                category {
+                    categoryName
+                }
             }
         }
     }
@@ -86,9 +86,9 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                 <Header/>
                 <div className={'p-3'}>
 
-                    <h4 className={'text-md text-gray-700 my-3'}>{data?.mySeries[0].writer.name}님께서 집필하신 작품 ✏️</h4>
+                    <h4 className={'text-md text-gray-700 my-3'}>{data?.mySeries.name}님께서 집필하신 작품 ✏️</h4>
                     {
-                        data?.mySeries.map((series) => {
+                        data?.mySeries.series.map((series) => {
                             return (
                                 <div className={'flex hover:shadow-lg rounded items-center mt-1'} key={series.id}>
                                     <Link href={`series/${series.id}`}>
@@ -97,7 +97,6 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                                                 <img src={series.thumbnail} alt={series.name} className={'w-full h-auto'}/>
                                             </div>
                                             <div className={'flex w-/7/12 py-1.5 pl-2 font-medium flex-col justify-center'}>
-
                                                 <h3 className={'text-sm text-gray-700 py-1'}>{series.name}</h3>
                                                 <h6 className={'text-xs text-gray-500 font-light'}>{series.description}</h6>
                                                 <p className={'flex items-center mt-1.5 text-xs text-gray-500 font-light'}>

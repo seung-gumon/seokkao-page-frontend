@@ -7,6 +7,17 @@
 // GraphQL query operation: findByIdSeries
 // ====================================================
 
+export interface findByIdSeries_findByIdSeries_episode {
+  __typename: "Episode";
+  episode: number;
+  createdAt: any;
+}
+
+export interface findByIdSeries_findByIdSeries_writer {
+  __typename: "User";
+  name: string;
+}
+
 export interface findByIdSeries_findByIdSeries {
   __typename: "Series";
   id: number;
@@ -19,6 +30,8 @@ export interface findByIdSeries_findByIdSeries {
    * 언제 연재하는지
    */
   serialization: string;
+  episode: findByIdSeries_findByIdSeries_episode[];
+  writer: findByIdSeries_findByIdSeries_writer;
 }
 
 export interface findByIdSeries {

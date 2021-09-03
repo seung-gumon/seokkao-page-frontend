@@ -17,3 +17,7 @@ export const addUnit = (like: number) => {
         }
     }
 }
+
+export const addComma = (like : number) => {
+    return like.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}

@@ -82,7 +82,7 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                 <title>나의 작품 | 석카오페이지</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
-            <div className={'mx-auto'} style={{'maxWidth': '950px '}}>
+            <div className={'mx-auto bg-white'} style={{'maxWidth': '950px '}}>
                 <Header/>
                 <div className={'p-3'}>
 

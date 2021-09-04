@@ -91,21 +91,23 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                         data?.mySeries.series.map((series) => {
                             return (
                                 <div className={'flex hover:shadow-lg rounded items-center mt-1'} key={series.id}>
-                                    <Link href={`series/${series.id}`}>
-                                        <a className={'flex'}>
-                                            <div className={'flex border rounded-xl bg-black'}  style={{'maxWidth':'120px'}}>
-                                                <img src={series.thumbnail} alt={series.name} className={'w-full h-auto'}/>
-                                            </div>
-                                            <div className={'flex w-/7/12 py-1.5 pl-2 font-medium flex-col justify-center'}>
-                                                <h3 className={'text-sm text-gray-700 py-1'}>{series.name}</h3>
-                                                <h6 className={'text-xs text-gray-500 font-light'}>{series.description}</h6>
-                                                <p className={'flex items-center mt-1.5 text-xs text-gray-500 font-light'}>
-                                                    <FontAwesomeIcon icon={faUser} className={'text-gray-400 mr-1'}/>
-                                                    {addUnit(series.like)}명 | {series.category.categoryName}
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </Link>
+                                    <div className={'flex border rounded-xl bg-black'}  style={{'maxWidth':'120px'}}>
+                                        <img src={series.thumbnail} alt={series.name} className={'w-full h-auto'}/>
+                                    </div>
+                                    <div className={'flex w-/7/12 py-1.5 pl-2 font-medium flex-col justify-center'}>
+                                        <h3 className={'text-sm text-gray-700 py-1'}>{series.name}</h3>
+                                        <h6 className={'text-xs text-gray-500 font-light'}>{series.description}</h6>
+                                        <p className={'flex items-center mt-1.5 text-xs text-gray-500 font-light'}>
+                                            <FontAwesomeIcon icon={faUser} className={'text-gray-400 mr-1'}/>
+                                            {addUnit(series.like)}명 | {series.category.categoryName}
+                                        </p>
+                                        <Link href={`/administrate/${series.id}`}>
+                                            <a>
+                                                <button style={{'maxWidth':'120px'}} className={'w-full bg-blue-400 py-1.5 mt-2 text-white flex items-center justify-center text-sm rounded'}>관리하기
+                                                </button>
+                                            </a>
+                                        </Link>
+                                    </div>
                                 </div>
                             )
                         })

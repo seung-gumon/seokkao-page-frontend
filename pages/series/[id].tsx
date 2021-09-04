@@ -1,12 +1,6 @@
-import {
-    GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult,
-    GetStaticProps,
-    GetStaticPropsContext, GetStaticPropsResult,
-    NextPage
-} from "next";
+import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
 import {initializeApollo} from "../../apolloClient";
 import moment from "moment";
-import {mainPage, mainPageVariables} from "../../__generated__/mainPage";
 import Head from "next/head";
 import React, {useState} from "react";
 import {Header} from "../../component/Header";
@@ -25,9 +19,10 @@ import {
 interface ISeries {
     series : findByIdSeries_findByIdSeries
     episodeLength : number
+    id : number
 }
 
-const FIND_BY_ID_SERIES = gql`
+export const FIND_BY_ID_SERIES = gql`
     query findByIdSeries($seriesId : Float!) {
         findByIdSeries(seriesId : $seriesId) {
             ...SeriesParts
@@ -39,12 +34,12 @@ const FIND_BY_ID_SERIES = gql`
             writer {
                 name
             }
-        } 
+        }
     }
     ${SERIES_FRAGMENT}
 `
 
-const Series : NextPage<ISeries> = ({series,episodeLength}) => {
+const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
 
 
     const [episodes , setEpisodes] = useState<findByIdSeries_findByIdSeries_episode[]>(series.episode);
@@ -83,7 +78,11 @@ const Series : NextPage<ISeries> = ({series,episodeLength}) => {
                                         <span className={'mt-1.5 text-xs md:text-sm'}>{series.writer.name} 작가</span>
                                     </div>
                                     <div className={'flex'}>
-                                        <button className={'text-xs px-2 py-1 border-solid border rounded text-gray-500 border-gray-300 md:text-md md:border-1'}>작품소개</button>
+                                        <Link href={`/series/description/${id}`}>
+                                            <a>
+                                                <button className={'text-xs px-2 py-1 border-solid border rounded text-gray-500 border-gray-300 md:text-md md:border-1'}>작품소개</button>
+                                            </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +153,8 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     return {
         props: {
             series: data.findByIdSeries,
-            episodeLength : data.findByIdSeries.episode.length
+            episodeLength : data.findByIdSeries.episode.length,
+            id : +id
         },
     }
 

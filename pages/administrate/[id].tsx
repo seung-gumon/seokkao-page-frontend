@@ -1,19 +1,97 @@
-import {useLazyQuery, useQuery, useReactiveVar} from "@apollo/client";
-import {isLoggedInVar} from "../../apolloClient";
+import {gql, useLazyQuery, useQuery, useReactiveVar} from "@apollo/client";
+import {initializeApollo, isLoggedInVar} from "../../apolloClient";
 import {meQuery} from "../../__generated__/meQuery";
 import {ME_QUERY} from "../me";
 import {mySeries} from "../../__generated__/mySeries";
 import {Header} from "../../component/Header";
 import PleaseLogin from "../../component/PleaseLogin";
-import React from "react";
 import {MY_SERIES} from "../my-work";
 import Head from "next/head";
+import { Line } from "react-chartjs-2";
+import DatePicker from "react-datepicker";
+import {forwardRef, useEffect, useState} from "react";
+import moment from "moment";
+import "react-datepicker/dist/react-datepicker.css";
+import ko from 'date-fns/locale/ko'
+import {getDashBoardData, getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
+import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
+import {findByIdSeries, findByIdSeriesVariables} from "../../__generated__/findByIdSeries";
+import {FIND_BY_ID_SERIES} from "../series/[id]";
+
+
+interface IAdministrate {
+    id : number
+}
+
+
+interface IChartDatasets {
+    label : string,
+    data : number[],
+    backgroundColor : string,
+    borderColor : string,
+    fill : boolean
+}
+
+interface IChart {
+    labels : string[],
+    datasets : IChartDatasets[]
+}
+
+const GET_DASHBOARD_DATA = gql`
+    query getDashBoardData($purchaseInput : PurChaseHistoryInput! , $seriesId : Float!) {
+        seriesDashBoardData(purChaseInput : $purchaseInput) {
+            date
+            count    
+        }
+        totalPurchase(seriesId : $seriesId)
+    }
+`
 
 
 
-const AdministrateById = () => {
+const AdministrateById : NextPage<IAdministrate> = ({id}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+
+
+    const [DashBoardStartDate, setDashBoardStartDate] = useState(new Date(moment().add(-7, 'days').format('YYYY/MM/DD')));
+    const [DashBoardEndDate, setDashBoardEndDate] = useState(new Date(moment().format('YYYY/MM/DD')));
+    const [chartData , setChartData] = useState<IChart>({
+        labels: [],
+        datasets: [
+            {
+                label: "요일별 열람된 개수",
+                data: [],
+                fill: true,
+                backgroundColor: "rgba(252, 211, 77,0.2)",
+                borderColor: "rgba(252, 211, 77,1)"
+            },
+        ]
+    })
+
+
+    const [fetching, {loading: SeriesFetchLoading}] = useLazyQuery<getDashBoardData , getDashBoardDataVariables>(GET_DASHBOARD_DATA , {
+        variables : {
+            seriesId : id,
+            purchaseInput : {
+                seriesId : id,
+                startDate : moment(DashBoardStartDate).format('YYYY-MM-DD'),
+                endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
+            }
+        },
+        onCompleted: data => {
+            setChartData((prev) => ({
+                labels : data.seriesDashBoardData.date,
+                datasets : [{
+                    label: "요일별 열람된 개수",
+                    data: data.seriesDashBoardData.count,
+                    fill: true,
+                    backgroundColor: "rgba(252, 211, 77,0.2)",
+                    borderColor: "rgba(252, 211, 77,1)"
+                }]
+            }))
+        }
+    });
 
 
     const {loading, error} = useQuery<meQuery>(ME_QUERY, {
@@ -24,12 +102,19 @@ const AdministrateById = () => {
         }
     });
 
-    const [fetching, {data, loading: SeriesFetchLoading}] = useLazyQuery<mySeries>(MY_SERIES);
 
 
 
 
-    if (loading) {
+
+    const CalenderCustomInput = forwardRef(({ value, onClick } : any, ref : any ) => (
+        <button className="bg-amber-300 py-0.5 px-1 rounded text-white mx-1" onClick={onClick} ref={ref}>
+            {value}
+        </button>
+    ));
+
+
+    if (loading || SeriesFetchLoading) {
         return (
             <>
                 <Header/>
@@ -58,59 +143,30 @@ const AdministrateById = () => {
             <div className={'mx-auto bg-white'} style={{'maxWidth': '950px '}}>
                 <Header/>
                 <div className={'p-3'}>
-                    <div className="min-w-screen flex items-center justify-center px-5 py-5">
-                        <div className="w-full max-w-3xl">
-                            <div className="-mx-2 md:flex">
-                                <div className="w-full md:w-1/3 px-2">
-                                    <div className="rounded-lg shadow-sm mb-4">
-                                        <div
-                                            className="rounded-lg bg-white shadow-lg md:shadow-xl relative overflow-hidden">
-                                            <div className="px-3 pt-8 pb-10 text-center relative z-10">
-                                                <h4 className="text-sm uppercase text-gray-500 leading-tight">Users</h4>
-                                                <h3 className="text-3xl text-gray-700 font-semibold leading-tight my-3">3,682</h3>
-                                                <p className="text-xs text-green-500 leading-tight">▲ 57.1%</p>
-                                            </div>
-                                            <div className="absolute bottom-0 inset-x-0">
-                                                <canvas id="chart1" height="70"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="w-full md:w-1/3 px-2">
-                                    <div className="rounded-lg shadow-sm mb-4">
-                                        <div
-                                            className="rounded-lg bg-white shadow-lg md:shadow-xl relative overflow-hidden">
-                                            <div className="px-3 pt-8 pb-10 text-center relative z-10">
-                                                <h4 className="text-sm uppercase text-gray-500 leading-tight">Subscribers</h4>
-                                                <h3 className="text-3xl text-gray-700 font-semibold leading-tight my-3">11,427</h3>
-                                                <p className="text-xs text-red-500 leading-tight">▼ 42.8%</p>
-                                            </div>
-                                            <div className="absolute bottom-0 inset-x-0">
-                                                <canvas id="chart2" height="70"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="w-full md:w-1/3 px-2">
-                                    <div className="rounded-lg shadow-sm mb-4">
-                                        <div
-                                            className="rounded-lg bg-white shadow-lg md:shadow-xl relative overflow-hidden">
-                                            <div className="px-3 pt-8 pb-10 text-center relative z-10">
-                                                <h4 className="text-sm uppercase text-gray-500 leading-tight">Comments</h4>
-                                                <h3 className="text-3xl text-gray-700 font-semibold leading-tight my-3">8,028</h3>
-                                                <p className="text-xs text-green-500 leading-tight">▲ 8.2%</p>
-                                            </div>
-                                            <div className="absolute bottom-0 inset-x-0">
-                                                <canvas id="chart3" height="70"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <Line data={chartData} />
+                    <div className={'flex pl-6 text-xs md:text-sm mt-2 items-center justify-center'}>
+                        <div>
+                            <DatePicker
+                                dateFormat="yyyy/MM/dd"
+                                selected={DashBoardStartDate}
+                                onChange={(date : Date) =>setDashBoardStartDate(date)} //only when value has changed
+                                customInput={<CalenderCustomInput />}
+                                disabledKeyboardNavigation={true}
+                                locale={ko}
+                            />
+                        </div>
+                        <span>~</span>
+                        <div>
+                            <DatePicker
+                                dateFormat="yyyy/MM/dd"
+                                selected={DashBoardEndDate}
+                                onChange={(date: Date) =>setDashBoardEndDate(date)} //only when value has changed
+                                customInput={<CalenderCustomInput />}
+                                disabledKeyboardNavigation={true}
+                                locale={ko}
+                            />
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </>
@@ -118,3 +174,18 @@ const AdministrateById = () => {
 }
 
 export default AdministrateById
+
+
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IAdministrate>> => {
+
+    const apolloClient = initializeApollo();
+
+    const {id}: any = context.query;
+
+
+    return {
+        props: {
+            id : +id
+        },
+    }
+}

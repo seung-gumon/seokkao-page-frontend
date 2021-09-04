@@ -157,8 +157,6 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
             id : +id
         },
     }
-
-
 }
 
 

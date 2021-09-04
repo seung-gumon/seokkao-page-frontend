@@ -44,6 +44,12 @@ export interface LoginInput {
   password: string;
 }
 
+export interface PurChaseHistoryInput {
+  seriesId: number;
+  startDate: string;
+  endDate: string;
+}
+
 export interface SeriesInput {
   thumbnail: string;
   name: string;

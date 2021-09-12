@@ -7,7 +7,7 @@ import PleaseLogin from "../../component/PleaseLogin";
 import Head from "next/head";
 import {Line} from "react-chartjs-2";
 import DatePicker from "react-datepicker";
-import React, {forwardRef, useState} from "react";
+import React, {forwardRef, useEffect, useState} from "react";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'
@@ -18,6 +18,7 @@ import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser, faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import NotAccept from "../../component/NotAccept";
 
 
 interface IAdministrate {
@@ -88,7 +89,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 
     const {
         data,
-        loading: SeriesFetchLoading
+        loading: SeriesFetchLoading,
+        error
     } = useQuery<getDashBoardData, getDashBoardDataVariables>(GET_DASHBOARD_DATA, {
         skip: !isLoggedIn,
         variables: {
@@ -113,6 +115,10 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
         }
     });
 
+    useEffect(() => {
+        console.log(error)
+    },[error])
+
 
     const CalenderCustomInput = forwardRef(({value, onClick}: any, ref: any) => (
         <button className="bg-amber-300 py-0.5 px-1 rounded text-white mx-1" onClick={onClick} ref={ref}>
@@ -124,6 +130,12 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     if (!isLoggedIn) {
         return (
             <PleaseLogin/>
+        )
+    }
+
+    if (error) {
+        return (
+            <NotAccept/>
         )
     }
 

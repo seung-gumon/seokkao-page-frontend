@@ -31,7 +31,6 @@ export const Header: NextPage<IHeader> = () => {
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
 
-
     const submit = () => {
         const {keyword} = getValues();
     }
@@ -39,7 +38,7 @@ export const Header: NextPage<IHeader> = () => {
     const router = useRouter();
 
 
-    const onClickWay = () =>{
+    const onClickWay = () => {
         if (isLoggedIn) {
             return router.push("/me");
         } else {
@@ -60,7 +59,7 @@ export const Header: NextPage<IHeader> = () => {
                     <form onSubmit={handleSubmit(submit)}>
                         <div className="bg-white flex items-center rounded-full border border-gray-200">
                             <input {...register('keyword')}
-                                   className="rounded-l-full w-full px-3 text-gray-700 leading-tight focus:outline-none text-sm"
+                                   className="rounded-l-full w-full px-3 text-gray-700 leading-tight focus:outline-none text-xs"
                                    type={'text'} placeholder={'작품명을 검색하세요'}/>
                             <div className="p-1">
                                 <button

@@ -21,6 +21,7 @@ import Link from "next/link";
 import NotAccept from "../../component/NotAccept";
 
 
+
 interface IAdministrate {
     id: number
 }
@@ -115,9 +116,6 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
         }
     });
 
-    useEffect(() => {
-        console.log(error)
-    },[error])
 
 
     const CalenderCustomInput = forwardRef(({value, onClick}: any, ref: any) => (
@@ -133,11 +131,13 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
         )
     }
 
-    if (error) {
+    if(error) {
         return (
             <NotAccept/>
         )
     }
+
+
 
     if (SeriesFetchLoading) {
         return (

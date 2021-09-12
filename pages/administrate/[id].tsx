@@ -2,21 +2,18 @@ import {gql, useLazyQuery, useQuery, useReactiveVar} from "@apollo/client";
 import {initializeApollo, isLoggedInVar} from "../../apolloClient";
 import {meQuery} from "../../__generated__/meQuery";
 import {ME_QUERY} from "../me";
-import {mySeries} from "../../__generated__/mySeries";
 import {Header} from "../../component/Header";
 import PleaseLogin from "../../component/PleaseLogin";
-import {MY_SERIES} from "../my-work";
 import Head from "next/head";
 import { Line } from "react-chartjs-2";
 import DatePicker from "react-datepicker";
-import {forwardRef, useEffect, useState} from "react";
+import {forwardRef, useState} from "react";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'
 import {getDashBoardData, getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {findByIdSeries, findByIdSeriesVariables} from "../../__generated__/findByIdSeries";
-import {FIND_BY_ID_SERIES} from "../series/[id]";
+
 
 
 interface IAdministrate {
@@ -37,13 +34,31 @@ interface IChart {
     datasets : IChartDatasets[]
 }
 
+
+
+
 const GET_DASHBOARD_DATA = gql`
-    query getDashBoardData($purchaseInput : PurChaseHistoryInput! , $seriesId : Float!) {
+    query getDashBoardData($purchaseInput : PurChaseHistoryInput!) {
         seriesDashBoardData(purChaseInput : $purchaseInput) {
             date
-            count    
+            count
+            series {
+                thumbnail
+                name
+                description
+                serialization
+                like
+                view
+                category {
+                    id
+                    mainCategory
+                    categoryName
+                }
+                episode {
+                    id
+                }
+            }
         }
-        totalPurchase(seriesId : $seriesId)
     }
 `
 
@@ -54,7 +69,7 @@ const AdministrateById : NextPage<IAdministrate> = ({id}) => {
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
 
-    const [DashBoardStartDate, setDashBoardStartDate] = useState(new Date(moment().add(-7, 'days').format('YYYY/MM/DD')));
+    const [DashBoardStartDate, setDashBoardStartDate] = useState(new Date(moment().add(-30, 'days').format('YYYY/MM/DD')));
     const [DashBoardEndDate, setDashBoardEndDate] = useState(new Date(moment().format('YYYY/MM/DD')));
     const [chartData , setChartData] = useState<IChart>({
         labels: [],
@@ -70,19 +85,18 @@ const AdministrateById : NextPage<IAdministrate> = ({id}) => {
     })
 
 
-    const [fetching, {loading: SeriesFetchLoading}] = useLazyQuery<getDashBoardData , getDashBoardDataVariables>(GET_DASHBOARD_DATA , {
-        variables : {
-            seriesId : id,
-            purchaseInput : {
-                seriesId : id,
-                startDate : moment(DashBoardStartDate).format('YYYY-MM-DD'),
+    const [fetching, {loading: SeriesFetchLoading}] = useLazyQuery<getDashBoardData, getDashBoardDataVariables>(GET_DASHBOARD_DATA, {
+        variables: {
+            purchaseInput: {
+                seriesId: id,
+                startDate: moment(DashBoardStartDate).format('YYYY-MM-DD'),
                 endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
             }
         },
         onCompleted: data => {
-            setChartData((prev) => ({
-                labels : data.seriesDashBoardData.date,
-                datasets : [{
+            setChartData(() => ({
+                labels: data.seriesDashBoardData.date,
+                datasets: [{
                     label: "요일별 열람된 개수",
                     data: data.seriesDashBoardData.count,
                     fill: true,
@@ -92,6 +106,8 @@ const AdministrateById : NextPage<IAdministrate> = ({id}) => {
             }))
         }
     });
+
+
 
 
     const {loading, error} = useQuery<meQuery>(ME_QUERY, {
@@ -168,6 +184,26 @@ const AdministrateById : NextPage<IAdministrate> = ({id}) => {
                         </div>
                     </div>
                 </div>
+
+                <div className="flex flex-wrap mx-2 mb-8">
+                    <div className="w-full md:w-2/6 lg:w-4/12 px-2 mb-4">
+                        <div className="border h-12 text-sm text-grey-dark flex items-center justify-center">
+                            <p>뷰</p>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-2/6 lg:w-4/12 px-2 mb-4">
+                        <div className="border h-12 text-sm text-grey-dark flex items-center justify-center">
+                            <p>에피소드 길이</p>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-2/6 lg:w-4/12 px-2 mb-4">
+                        <div className="border h-12 text-sm text-grey-dark flex items-center justify-center">
+                            <p>좋아요 수</p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </>
     )

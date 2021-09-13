@@ -35,7 +35,7 @@ export interface findByIdSeries_findByIdSeries {
 }
 
 export interface findByIdSeries {
-  findByIdSeries: findByIdSeries_findByIdSeries;
+  findByIdSeries: findByIdSeries_findByIdSeries | null;
 }
 
 export interface findByIdSeriesVariables {

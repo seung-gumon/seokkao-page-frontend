@@ -18,7 +18,7 @@ import {
 import NotAccept from "../../component/NotAccept";
 
 interface ISeries {
-    series : findByIdSeries_findByIdSeries
+    series : findByIdSeries_findByIdSeries | null
     episodeLength : number
     id : number
 }
@@ -44,9 +44,9 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
 
 
     useEffect(() =>{
-       if (series) {
-           setEpisodes(series.episode)
-       }
+        if (series) {
+            setEpisodes(series.episode)
+        }
     },[])
 
     const [episodes , setEpisodes] = useState<findByIdSeries_findByIdSeries_episode[]>([]);
@@ -57,7 +57,7 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
     }
 
 
-    if (episodes.length === 0) {
+    if (episodes.length === 0 || !series) {
         return (
             <NotAccept/>
         )
@@ -67,7 +67,7 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
     return (
         <>
             <Head>
-                <title>나의 작품 | 석카오페이지</title>
+                <title>{series.name} | 석카오페이지</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>
@@ -150,26 +150,26 @@ export default Series;
 
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
-        const apolloClient = initializeApollo();
+    const apolloClient = initializeApollo();
 
-        const {id}: any = context.query;
+    const {id}: any = context.query;
 
 
 
-        const {data , error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
-            query: FIND_BY_ID_SERIES,
-            variables: {
-                seriesId: +id
-            }
-        });
-
-        return {
-            props: {
-                series: data.findByIdSeries,
-                episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
-                id : +id,
-            },
+    const {data , error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
+        query: FIND_BY_ID_SERIES,
+        variables: {
+            seriesId: +id
         }
+    });
+
+    return {
+        props: {
+            series: data.findByIdSeries,
+            episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
+            id : +id,
+        },
+    }
 }
 
 

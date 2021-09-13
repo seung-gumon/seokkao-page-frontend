@@ -33,7 +33,7 @@ export interface workDescription_findByIdSeries {
 }
 
 export interface workDescription {
-  findByIdSeries: workDescription_findByIdSeries;
+  findByIdSeries: workDescription_findByIdSeries | null;
 }
 
 export interface workDescriptionVariables {

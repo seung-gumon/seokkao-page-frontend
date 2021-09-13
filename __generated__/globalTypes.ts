@@ -34,7 +34,7 @@ export interface CreateAccountInput {
 }
 
 export interface EpisodeInput {
-  Series: number;
+  series: SeriesInput;
   episode: number;
   contents: string[];
 }
@@ -58,6 +58,7 @@ export interface SeriesInput {
   like: number;
   view: number;
   writer: UserInput;
+  writerId: number;
   category: CategoryInput;
   episode: EpisodeInput[];
 }

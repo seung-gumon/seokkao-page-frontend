@@ -102,7 +102,6 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
             }
         },
         onCompleted: data => {
-            console.log(data, "SUCCESS")
             setChartData(() => ({
                 labels: data.seriesDashBoardData.date,
                 datasets: [{
@@ -222,15 +221,16 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                 </div>
             </div>
 
+
             <section className={'p-4 mx-auto bg-white'} style={{'maxWidth': '950px'}}>
                 <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>에피소드 관리하기</h3>
-                <div className={'flex flex-col max-h-96 overflow-auto'}>
+                <div className={'flex flex-col-reverse max-h-96 overflow-auto'}>
                     {
                         data?.seriesDashBoardData.series.episode.map((episode, index) => {
                             return (
-                                <Link href={`/administrate/series/${id}/${episode.id}`} key={index}>
+                                <Link href={`/administrate/${id}/${episode.id}`} key={index}>
                                     <a>
-                                        <div className={'pl-1.5 hover:bg-amber-100 py-1.5 text-xs text-gray-600 '}>
+                                        <div className={'pl-1.5 hover:bg-amber-100 py-1.5 text-xs text-gray-600 border-b'}>
                                             <span
                                                 className={'whitespace-nowrap overflow-hidden overflow-ellipsis text-xs md:text-md'}>{data?.seriesDashBoardData.series.name} {episode.id}화</span>
                                         </div>
@@ -239,7 +239,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                             )
                         })
                     }
-                    <div className={'flex'}>
+                </div>
+                    <div className={'flex flex-col'}>
                         <Link href={`/administrate/series/${id}/new`}>
                             <a className={'w-full'}>
                                 <button
@@ -249,15 +250,13 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                             </a>
                         </Link>
                     </div>
-                </div>
             </section>
 
             <section className={'p-4 mx-auto bg-white'} style={{'maxWidth': '950px'}}>
                 <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>대표
                     커버 사진 변경</h3>
                 <div className={'flex text-center mx-auto'}>
-                    <img src={data?.seriesDashBoardData.series.thumbnail} alt={data?.seriesDashBoardData.series.name}
-                         className={'w-2/6 h-auto'}/>
+                    <img src={data?.seriesDashBoardData.series.thumbnail} alt={data?.seriesDashBoardData.series.name} className={'w-2/6 h-auto'}/>
                     <div className={'flex'}>
                         <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl cursor-pointer">
                             <div className="md:flex">

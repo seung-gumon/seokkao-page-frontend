@@ -26,7 +26,7 @@ export const FIND_BY_ID_SERIES = gql`
 
 
 interface IDescription {
-    data : workDescription
+    data : workDescription | null
 }
 
 const Description: NextPage<IDescription> = ({data}) => {
@@ -43,11 +43,11 @@ const Description: NextPage<IDescription> = ({data}) => {
                 <div className={'p-3 bg-white w-full flex'}>
                     <h5 className={'text-gray-500 text-center'} style={{'minWidth':'17%'}}>작품 설명</h5>
                     <div className={'flex flex-col'}>
-                        <p className={'text-gray-500 ml-2 text-sm line-clamp-5'}>{data.findByIdSeries.description}</p>
+                        <p className={'text-gray-500 ml-2 text-sm line-clamp-5'}>{data?.findByIdSeries?.description}</p>
                         <ul className={'flex flex-col mt-8 ml-2 w-full text-sm text-gray-500'}>
                             <li className={'w-full flex mt-1'}>
                                 <span className={'font-bold'} style={{'minWidth': '32%'}}>카테고리</span>
-                                <span>{data.findByIdSeries.category.categoryName}</span>
+                                <span>{data?.findByIdSeries?.category?.categoryName}</span>
                             </li>
                             <li className={'w-full flex mt-1'}>
                                 <span className={'font-bold'} style={{'minWidth': '32%'}}>발행자</span>
@@ -59,7 +59,7 @@ const Description: NextPage<IDescription> = ({data}) => {
                             </li>
                             <li className={'w-full flex mt-1'}>
                                 <span className={'font-bold'} style={{'minWidth': '32%'}}>전자책 정가</span>
-                                <span>{data.findByIdSeries.category.mainCategory === 'Novel' ?
+                                <span>{data?.findByIdSeries?.category?.mainCategory === 'Novel' ?
                                     "100원/회차 당"
                                     :
                                     "200원/회차 당"
@@ -67,7 +67,7 @@ const Description: NextPage<IDescription> = ({data}) => {
                             </li>
                             <li className={'w-full flex mt-1'}>
                                 <span className={'font-bold'} style={{'minWidth': '32%'}}>작가</span>
-                                <span>{data.findByIdSeries.writer.name}</span>
+                                <span>{data?.findByIdSeries?.writer.name}</span>
                             </li>
                         </ul>
                     </div>
@@ -81,27 +81,35 @@ export default Description;
 
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IDescription>> => {
+    try{
+        const apolloClient = initializeApollo();
 
-    const apolloClient = initializeApollo();
-
-    const {id}: any = context.query;
+        const {id}: any = context.query;
 
 
 
-    const {data} = await apolloClient.query<workDescription , workDescriptionVariables>({
-        query: FIND_BY_ID_SERIES,
-        variables: {
-            seriesId: +id
+        const {data} = await apolloClient.query<workDescription , workDescriptionVariables>({
+            query: FIND_BY_ID_SERIES,
+            variables: {
+                seriesId: +id
+            }
+        })
+
+
+
+        return {
+            props: {
+                data
+            },
         }
-    })
-
-
-
-    return {
-        props: {
-            data
-        },
+    }catch (e) {
+        return {
+            props : {
+                data : null
+            }
+        }
     }
+
 
 
 }

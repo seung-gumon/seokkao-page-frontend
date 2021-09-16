@@ -120,7 +120,7 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
                 <article className={'w-full my-2 md:py-3 py-2 px-4 bg-white border-b border-gray-200'}>
                     <div className={'w-full pt-1 pb-4 flex items-center justify-between'}>
                         <span className={'text-gray-500 text-sm md:text-sm체'}>전체 ({episodeLength})</span>
-                        <select className={'text-gray-500 text-xs md:text-sm'} onChange={(e) => changeOrderBy(e.target.value)}>
+                        <select className={'text-gray-500 text-xs md:text-sm'} onChange={(e) => changeOrderBy()}>
                             <option value={'early'}>첫편부터</option>
                             <option value={'latest'}>최신순</option>
                         </select>

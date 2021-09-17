@@ -7,6 +7,7 @@ import React, {useRef, useState} from "react";
 import {Header} from "../../../component/Header";
 import {useRouter} from "next/router";
 import {adminFindByIdEpisode, adminFindByIdEpisodeVariables} from "../../../__generated__/adminFindByIdEpisode";
+import html2canvas from "@nidi/html2canvas";
 
 
 const ADMIN_FIND_BY_ID_EPISODE = gql`
@@ -41,47 +42,27 @@ const EpisodeAdmin = () => {
         }
     })
 
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const imageRef = useRef<HTMLImageElement>(null);
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
 
-    const [novelText,setNovelText] = useState<string>('');
+    const [imageList , setImageList] = useState<string[]>([]);
 
 
-    const writeNovel = (textAreaValue : string) => {
-        const canvas = canvasRef.current;
-        const imageElem = imageRef.current;
+    const captureToImage = async () => {
+        const textarea = document.getElementById("target");
 
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
+        if (textarea) {
+            textarea.style.width = '720px';
+            textarea.style.height = '1097px';
 
+            await html2canvas(textarea).then((canvas) => {
+                const img = canvas.toDataURL();
+                setImageList((prev) => [...prev, img]);
+                textarea.style.height = "";
+            });
+
+            textarea.style.width = '100%';
+            textarea.style.height = '187px';
         }
-    }
-
-
-
-
-    const captureToImage = () => {
-        const canvas = canvasRef.current;
-        const imageElem = imageRef.current;
-
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-
-            if (ctx) {
-                ctx.font = "6px";
-                // ctx.canvas.width = ctx?.measureText(novelText).width;
-                ctx.fillText(novelText , 0 , 10);
-
-                // ctx.fillText(textAreaValue, 0, 10);
-                // ctx.font = "12px"
-                // if (imageElem) {
-                // imageElem.src = tCtx.canvas.toDataURL();
-                // }
-            }
-        }
-
     }
 
 
@@ -127,11 +108,22 @@ const EpisodeAdmin = () => {
 
                     <article className={'flex flex-col bg-white w-full text-gray-600'}>
                         <h6 className={'py-3 '}>텍스트 편집기</h6>
-                        <canvas ref={canvasRef} className={'bg-red-200'} style={{imageRendering: 'pixelated'}}></canvas>
-                        <img ref={imageRef}/>
-                        <textarea className={'border w-full p-3'} onChange={(e) => setNovelText(e.target.value)} ref={textAreaRef}/>
+                        <textarea rows={16} cols={12} className={'border w-full p-3 whitespace-pre-wrap break-all'} style={{'fontSize':'25px','height':'187px','padding':'85px','lineHeight':'63px'}} id={'target'}/>
                         <button className={"bg-blue-300 py-3"} onClick={() => captureToImage()}>저장하기</button>
                     </article>
+
+                    <article className={'flex w-full'}>
+                        {
+                            imageList.map((image,index) => {
+                                return (
+                                    <div className={'w-1/6 border'}>
+                                        <img key={index} src={image} style={{'width':'720px','height':'auto'}}/>
+                                    </div>
+                                    )
+                            })
+                        }
+                    </article>
+
                 </section>
             </section>
         </>

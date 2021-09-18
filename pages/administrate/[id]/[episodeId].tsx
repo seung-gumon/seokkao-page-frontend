@@ -49,17 +49,13 @@ const EpisodeAdmin = () => {
 
     const captureToImage = async () => {
         const textarea = document.getElementById("target");
-
         if (textarea) {
             textarea.style.width = '720px';
             textarea.style.height = '1097px';
-
             await html2canvas(textarea).then((canvas) => {
                 const img = canvas.toDataURL();
                 setImageList((prev) => [...prev, img]);
-                textarea.style.height = "";
             });
-
             textarea.style.width = '100%';
             textarea.style.height = '187px';
         }
@@ -109,20 +105,24 @@ const EpisodeAdmin = () => {
                     <article className={'flex flex-col bg-white w-full text-gray-600'}>
                         <h6 className={'py-3 '}>텍스트 편집기</h6>
                         <textarea rows={16} cols={12} className={'border w-full p-3 whitespace-pre-wrap break-all'} style={{'fontSize':'25px','height':'187px','padding':'85px','lineHeight':'63px'}} id={'target'}/>
-                        <button className={"bg-blue-300 py-3"} onClick={() => captureToImage()}>저장하기</button>
+                        <button className={"bg-yellow-300 hover:bg-yellow-400 py-3 mt-3 w-full rounded mx-auto"} onClick={() => captureToImage()}>저장하기</button>
                     </article>
 
-                    <article className={'flex w-full'}>
-                        {
-                            imageList.map((image,index) => {
-                                return (
-                                    <div className={'w-1/6 border'}>
-                                        <img key={index} src={image} style={{'width':'720px','height':'auto'}}/>
-                                    </div>
+
+                        <article className={'flex w-full flex-wrap items-center mx-10'}>
+                            {
+                                imageList.map((image,index) => {
+                                    return (
+                                        <div className={'w-1/6 border mx-1.5 mt-1.5'}>
+                                            <img key={index} src={image} style={{'width':'720px','height':'auto'}}/>
+                                        </div>
                                     )
-                            })
-                        }
-                    </article>
+                                })
+                            }
+                        </article>
+
+
+
 
                 </section>
             </section>

@@ -38,6 +38,11 @@ export interface PurChaseHistoryInput {
   endDate: string;
 }
 
+export interface episodeUpdateInput {
+  id: number;
+  contents: string[];
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

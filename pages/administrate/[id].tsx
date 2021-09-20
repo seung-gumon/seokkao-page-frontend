@@ -1,24 +1,22 @@
-import {gql, useLazyQuery, useQuery, useReactiveVar} from "@apollo/client";
+import {gql, useLazyQuery, useMutation, useQuery, useReactiveVar} from "@apollo/client";
 import {initializeApollo, isLoggedInVar} from "../../apolloClient";
-import {meQuery} from "../../__generated__/meQuery";
-import {ME_QUERY} from "../me";
 import {Header} from "../../component/Header";
 import PleaseLogin from "../../component/PleaseLogin";
 import Head from "next/head";
 import {Line} from "react-chartjs-2";
 import DatePicker from "react-datepicker";
-import React, {forwardRef, useEffect, useState} from "react";
+import React, {ChangeEvent, forwardRef, useEffect, useState} from "react";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'
 import {getDashBoardData, getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {addComma, addUnit} from "../../public/constants";
-import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
+import {addComma, addUnit, uploadImage} from "../../public/constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser, faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import NotAccept from "../../component/NotAccept";
+import {updateNovelProfileImage, updateNovelProfileImageVariables} from "../../__generated__/updateNovelProfileImage";
 
 
 
@@ -41,7 +39,7 @@ interface IChart {
 }
 
 
-const GET_DASHBOARD_DATA = gql`
+export const GET_DASHBOARD_DATA = gql`
     query getDashBoardData($purchaseInput : PurChaseHistoryInput!) {
         seriesDashBoardData(purChaseInput : $purchaseInput) {
             date
@@ -60,8 +58,18 @@ const GET_DASHBOARD_DATA = gql`
                 }
                 episode {
                     id
+                    episode
                 }
             }
+        }
+    }
+`
+
+const UPDATE_NOVEL_PROFILE_IMAGE = gql`
+    mutation updateNovelProfileImage($seriesId : Float! , $novelProfileImage : String!) {
+        updateNovelProfileImage(seriesId: $seriesId , novelProfileImage : $novelProfileImage) {
+            ok
+            error
         }
     }
 `
@@ -70,10 +78,14 @@ const GET_DASHBOARD_DATA = gql`
 const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+    const apolloClient = initializeApollo();
+
+
 
 
     const [DashBoardStartDate, setDashBoardStartDate] = useState(new Date(moment().add(-30, 'days').format('YYYY/MM/DD')));
     const [DashBoardEndDate, setDashBoardEndDate] = useState(new Date(moment().format('YYYY/MM/DD')));
+    const [updateThumbnail,setUpdateThumbnail] = useState<string>('');
     const [chartData, setChartData] = useState<IChart>({
         labels: [],
         datasets: [
@@ -115,6 +127,60 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
         }
     });
 
+
+    const [changeNovelProfileImage , {loading : changeNovelImageLoading}] = useMutation<updateNovelProfileImage, updateNovelProfileImageVariables>(UPDATE_NOVEL_PROFILE_IMAGE, {
+        onCompleted: async data => {
+            if (data.updateNovelProfileImage.ok) {
+                const queryResult = apolloClient.readQuery({
+                    query: GET_DASHBOARD_DATA, variables: {
+                        purchaseInput: {
+                            seriesId: id,
+                            startDate: moment(DashBoardStartDate).format('YYYY-MM-DD'),
+                            endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
+                        }
+                    }
+                })
+
+                await apolloClient.writeQuery({
+                    query: GET_DASHBOARD_DATA,
+                    variables: {
+                        purchaseInput: {
+                            seriesId: id,
+                            startDate: moment(DashBoardStartDate).format('YYYY-MM-DD'),
+                            endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
+                        }
+                    },
+                    data: {
+                        seriesDashBoardData : {
+                            ...queryResult.seriesDashBoardData,
+                            series: {
+                                ...queryResult.seriesDashBoardData.series,
+                                thumbnail: updateThumbnail
+                            }
+                        }
+                    }
+                });
+                return alert("업데이트 완료 되었습니다");
+            } else {
+                return alert(data.updateNovelProfileImage.error)
+            }
+        }
+    });
+
+
+    const uploadProfileImage = async (e : ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files
+        if (file) {
+            const novelProfileImage : string = await uploadImage(file[0]);
+            setUpdateThumbnail(() => novelProfileImage);
+            await changeNovelProfileImage({
+                variables : {
+                    novelProfileImage,
+                    seriesId : id
+                }
+            })
+        }
+    }
 
 
     const CalenderCustomInput = forwardRef(({value, onClick}: any, ref: any) => (
@@ -224,7 +290,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 
             <section className={'p-4 mx-auto bg-white'} style={{'maxWidth': '950px'}}>
                 <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>에피소드 관리하기</h3>
-                <div className={'flex flex-col-reverse max-h-96 overflow-auto'}>
+                <div className={'flex flex-col max-h-96 overflow-auto'}>
                     {
                         data?.seriesDashBoardData.series.episode.map((episode, index) => {
                             return (
@@ -232,7 +298,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                                     <a>
                                         <div className={'pl-1.5 hover:bg-amber-100 py-1.5 text-xs text-gray-600 border-b'}>
                                             <span
-                                                className={'whitespace-nowrap overflow-hidden overflow-ellipsis text-xs md:text-md'}>{data?.seriesDashBoardData.series.name} {episode.id}화</span>
+                                                className={'whitespace-nowrap overflow-hidden overflow-ellipsis text-xs md:text-md'}>{data?.seriesDashBoardData.series.name} {episode.episode}화</span>
                                         </div>
                                     </a>
                                 </Link>
@@ -241,7 +307,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                     }
                 </div>
                     <div className={'flex flex-col'}>
-                        <Link href={`/administrate/series/${id}/new`}>
+                        <Link href={`/administrate/${id}/new`}>
                             <a className={'w-full'}>
                                 <button
                                     className={'w-full bg-yellow-300 text-gray-600 rounded-lg py-2 mt-1.5 font-bold'}>
@@ -256,7 +322,16 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                 <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>대표
                     커버 사진 변경</h3>
                 <div className={'flex text-center mx-auto'}>
-                    <img src={data?.seriesDashBoardData.series.thumbnail} alt={data?.seriesDashBoardData.series.name} className={'w-2/6 h-auto'}/>
+                    {
+                        changeNovelImageLoading ?
+                            <div className=" flex justify-center flex-col items-center text-gray-600">
+                                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-500"></div>
+                                이미지를 가져오는중입니다..
+                            </div>
+                            :
+                            <img src={data?.seriesDashBoardData.series.thumbnail} alt={data?.seriesDashBoardData.series.name} className={'w-2/6 h-auto'}/>
+                    }
+
                     <div className={'flex'}>
                         <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl cursor-pointer">
                             <div className="md:flex">
@@ -269,7 +344,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                                                 <span className="block text-xs text-gray-600 font-normal font-bold">클릭 해서 이미지 업로드<br/>사이즈 : 320*320</span>
                                             </div>
                                         </div>
-                                        <input type="file" className="h-full w-full opacity-0" name=""/>
+                                        <input type="file" className="h-full w-full opacity-0" onChange={(e) => uploadProfileImage(e)}/>
                                     </div>
                                 </div>
                             </div>

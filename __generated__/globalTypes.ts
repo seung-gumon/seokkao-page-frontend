@@ -38,6 +38,12 @@ export interface PurChaseHistoryInput {
   endDate: string;
 }
 
+export interface episodeCreateInput {
+  episode: number;
+  contents: string[];
+  seriesId: number;
+}
+
 export interface episodeUpdateInput {
   id: number;
   contents: string[];

@@ -17,7 +17,7 @@ import {
 } from "../../__generated__/findByIdSeries";
 import NotAccept from "../../component/NotAccept";
 
-interface ISeries {
+export interface ISeries {
     series : findByIdSeries_findByIdSeries | null
     episodeLength : number
     id : number

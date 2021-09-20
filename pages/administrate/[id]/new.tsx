@@ -1,39 +1,25 @@
-import Head from "next/head";
 import {gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
-import {isLoggedInVar} from "../../../apolloClient";
-import PleaseLogin from "../../../component/PleaseLogin";
-import NotAccept from "../../../component/NotAccept";
-import React, {useEffect, useRef, useState} from "react";
-import {Header} from "../../../component/Header";
-import {useRouter} from "next/router";
+import {initializeApollo, isLoggedInVar} from "../../../apolloClient";
 import {adminFindByIdEpisode, adminFindByIdEpisodeVariables} from "../../../__generated__/adminFindByIdEpisode";
+import React, {useState} from "react";
 import html2canvas from "@nidi/html2canvas";
-import {updateEpisode, updateEpisodeVariables} from "../../../__generated__/updateEpisode";
+import PleaseLogin from "../../../component/PleaseLogin";
+import {Header} from "../../../component/Header";
+import NotAccept from "../../../component/NotAccept";
+import Head from "next/head";
+import {IImage} from "image-size/dist/types/interface";
+import {IImages} from "./[episodeId]";
+import {FIND_BY_ID_SERIES, ISeries} from "../../series/[id]";
+import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
+import {findByIdSeries, findByIdSeriesVariables} from "../../../__generated__/findByIdSeries";
+import {createEpisode, createEpisodeVariables} from "../../../__generated__/createEpisode";
+import moment from "moment";
+import {GET_DASHBOARD_DATA} from "../[id]";
 
 
-export interface IImages {
-    id: number,
-    src: string,
-    seq: number
-}
-
-
-export const ADMIN_FIND_BY_ID_EPISODE = gql`
-    query adminFindByIdEpisode($seriesId : Float!, $episodeId : Float!) {
-        adminFindByIdEpisode(seriesId :$seriesId, episodeId : $episodeId) {
-            id
-            episode
-            contents
-            series {
-                name
-            }
-        }
-    }
-`
-
-const UPDATE_EPISODE = gql`
-    mutation updateEpisode($episodeInput : episodeUpdateInput!) {
-        updateEpisode(episodeInput: $episodeInput) {
+const CREATE_EPISODE = gql`
+    mutation createEpisode($episodeCreateInput : episodeCreateInput!) {
+        createEpisode(episodeCreateInput: $episodeCreateInput) {
             ok
             error
         }
@@ -41,64 +27,53 @@ const UPDATE_EPISODE = gql`
 `
 
 
-const EpisodeAdmin = () => {
+
+const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,id}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
 
-    const {query: {episodeId, id: seriesId}} = useRouter();
-
-    const {data, loading} = useQuery<adminFindByIdEpisode, adminFindByIdEpisodeVariables>(ADMIN_FIND_BY_ID_EPISODE, {
-        skip: !isLoggedIn,
-        variables: {
-            seriesId: Number(seriesId),
-            episodeId: Number(episodeId)
-        },
+    const [createMutation] = useMutation<createEpisode, createEpisodeVariables>(CREATE_EPISODE, {
+        refetchQueries: [{
+            query: GET_DASHBOARD_DATA,
+            variables: {
+                purchaseInput: {
+                    seriesId: series?.id,
+                    startDate: moment((new Date(moment().add(-30, 'days').format('YYYY/MM/DD')))).format('YYYY-MM-DD'),
+                    endDate: moment(new Date(moment().format('YYYY/MM/DD'))).format('YYYY-MM-DD')
+                }
+            },
+        }],
         onCompleted: data => {
-            const contents = data.adminFindByIdEpisode?.contents.map((contents, index) => {
-                return {
-                    id: index,
-                    src: contents,
-                    seq: index+1
+            if (data.createEpisode.ok) {
+                return alert("새로운 에피소드가 등록되었습니다.")
+            } else {
+                return alert('새로운 에피소드 등록 실패하였습니다.새로고침후 다시 시도 해주세요')
+            }
+        },
+    });
+
+    const createEpisode = async () => {
+        const contents = imageList?.map(image => image.src);
+        if (series && contents) {
+            await createMutation({
+                variables : {
+                    episodeCreateInput : {
+                        seriesId : series.id,
+                        episode : episodeLength + 1,
+                        contents
+                    }
                 }
             })
-            setImageList(contents);
         }
-    });
-
-
-    const [updateEpisode] = useMutation<updateEpisode>(UPDATE_EPISODE, {
-        onCompleted: data => {
-            if (data.updateEpisode.ok) {
-                return alert("업데이트 성공하였습니다.")
-            } else {
-                return alert('업데이트 실패 하였습니다. 새로고침후 다시 시도 해주세요')
-            }
-        },
-        refetchQueries: [{
-            query: ADMIN_FIND_BY_ID_EPISODE,
-            variables: {
-                seriesId: Number(seriesId),
-                episodeId: Number(episodeId)
-            },
-        }]
-    });
-
-    const update = async () => {
-        const contents = imageList?.map(image => image.src);
-        await updateEpisode({
-            variables : {
-                episodeInput : {
-                    id : data?.adminFindByIdEpisode?.id,
-                    contents
-                }
-            }
-        })
     }
 
 
     const [imageList, setImageList] = useState<IImages[] | undefined>([]);
     const [fetchImage, setFetchImage] = useState<boolean>(false);
+
+
+
 
 
     const convertToFileAndUploadImage = async (base64String: string) => {
@@ -216,37 +191,17 @@ const EpisodeAdmin = () => {
     }
 
 
-    if (loading) {
-        return (
-            <>
-                <Header/>
-                <div className={'flex flex-col h-screen'}>
-                    <div className={'w-full h-full flex items-center justify-center'}>
-                        Loading...
-                    </div>
-                </div>
-            </>
-        )
-    }
-
-
-    if (!data?.adminFindByIdEpisode) {
-        return (
-            <NotAccept/>
-        )
-    }
-
 
     return (
         <>
             <Head>
-                <title>{data.adminFindByIdEpisode?.series.name} | 석카오페이지</title>
+                <title>{series?.name} | 석카오페이지</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>
                 <Header/>
                 <section className={'mx-auto w-full bg-white pt-5 px-1.5'} style={{'maxWidth': '950px'}}>
-                    <h2 className={'text-md lg:text-xl text-gray-600'}>{data.adminFindByIdEpisode?.series.name} {data.adminFindByIdEpisode.episode}화</h2>
+                    <h2 className={'text-md lg:text-xl text-gray-600'}>{series?.name} {episodeLength+1}화</h2>
                     {
                         fetchImage ?
                             <div className=" flex justify-center flex-col items-center text-gray-600">
@@ -301,7 +256,7 @@ const EpisodeAdmin = () => {
                     <button className={'w-3/6 bg-blue-300 py-2 rounded hover:bg-blue-500'}
                             onClick={() => sortImage()}>이미지 재배열 하기
                     </button>
-                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'} onClick={() => update()}>수정하기</button>
+                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'} onClick={() => createEpisode()}>생성하기</button>
                 </section>
             </section>
 
@@ -309,4 +264,28 @@ const EpisodeAdmin = () => {
     )
 }
 
-export default EpisodeAdmin;
+
+export default NewEpisodeAdmin
+
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
+    const apolloClient = initializeApollo();
+
+    const {id}: any = context.query;
+
+
+
+    const {data , error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
+        query: FIND_BY_ID_SERIES,
+        variables: {
+            seriesId: +id
+        }
+    });
+
+    return {
+        props: {
+            series: data.findByIdSeries,
+            episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
+            id : +id,
+        },
+    }
+}

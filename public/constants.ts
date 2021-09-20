@@ -21,3 +21,15 @@ export const addUnit = (like: number) => {
 export const addComma = (like : number) => {
     return like.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+
+
+export const uploadImage = async (file: File) => {
+    const formBody = new FormData();
+    formBody.append('file', file);
+
+    const url = await (await fetch("http://localhost:5000/uploads/", {
+        method: "POST",
+        body: formBody
+    })).json();
+    return url.url;
+}

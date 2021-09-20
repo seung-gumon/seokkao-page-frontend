@@ -19,6 +19,7 @@ export interface getDashBoardData_seriesDashBoardData_series_category {
 export interface getDashBoardData_seriesDashBoardData_series_episode {
   __typename: "Episode";
   id: number;
+  episode: number;
 }
 
 export interface getDashBoardData_seriesDashBoardData_series {

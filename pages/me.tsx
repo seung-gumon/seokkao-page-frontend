@@ -33,6 +33,13 @@ const me: NextPage<IMe> = () => {
     const {data ,loading, error} = useQuery<meQuery>(ME_QUERY);
 
 
+    const logOut = () => {
+        localStorage.removeItem('login-token');
+        return window.location.href = "/login";
+    }
+
+
+
     if (loading) {
         return (
             <>
@@ -98,6 +105,10 @@ const me: NextPage<IMe> = () => {
                                 </a>
                             </Link>
                         }
+                        <div className={'flex border border-solid border-gray-200 items-center justify-between mt-2 cursor-pointer'} onClick={() => logOut()}>
+                            <div className={'text-gray-800 py-2 px-4 text-sm'}>로그아웃</div>
+                            <div className={'text-gray-800 py-2 px-4 text-sm'}>&rarr;</div>
+                        </div>
                     </div>
 
                 </div>

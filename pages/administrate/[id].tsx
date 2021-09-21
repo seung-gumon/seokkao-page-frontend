@@ -292,6 +292,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                 <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>에피소드 관리하기</h3>
                 <div className={'flex flex-col max-h-96 overflow-auto'}>
                     {
+                        data?.seriesDashBoardData.series.episode.length !== 0 ?
                         data?.seriesDashBoardData.series.episode.map((episode, index) => {
                             return (
                                 <Link href={`/administrate/${id}/${episode.id}`} key={index}>
@@ -304,6 +305,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                                 </Link>
                             )
                         })
+                            :
+                            <span className={'text-xs text-gray-600 md:text-md'}>등록된 에피소드가 없습니다! 새로운 에피소드를 등록해주세요!🐵</span>
                     }
                 </div>
                     <div className={'flex flex-col'}>

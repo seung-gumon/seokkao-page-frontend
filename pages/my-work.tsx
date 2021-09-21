@@ -88,6 +88,8 @@ const MyWork : NextPage<IMyWork> = ({}) => {
 
                     <h4 className={'text-md text-gray-700 my-3'}>{data?.mySeries.name}님께서 집필하신 작품 ✏️</h4>
                     {
+
+                        data?.mySeries.series.length !== 0 ?
                         data?.mySeries.series.map((series) => {
                             return (
                                 <div className={'flex hover:shadow-lg rounded items-center mt-1'} key={series.id}>
@@ -111,6 +113,10 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                                 </div>
                             )
                         })
+                            :
+                            <span className={'text-xs text-gray-700 md:text-lg'}>
+                                집필하신 작품이 없습니다. 새로운 작품을 집필해보세요 ✏️
+                            </span>
                     }
                 </div>
             </div>

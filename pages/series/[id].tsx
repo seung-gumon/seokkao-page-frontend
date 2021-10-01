@@ -40,6 +40,12 @@ export const FIND_BY_ID_SERIES = gql`
     ${SERIES_FRAGMENT}
 `
 
+
+// export const BUY_EPISODE = gql`
+//
+// `
+
+
 const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
 
 

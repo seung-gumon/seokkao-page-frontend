@@ -1,5 +1,5 @@
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {initializeApollo} from "../../apolloClient";
+import {initializeApollo, isLoggedInVar} from "../../apolloClient";
 import moment from "moment";
 import Head from "next/head";
 import React, {useEffect, useState} from "react";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser , faComment} from "@fortawesome/free-solid-svg-icons";
 import {addComma, addUnit} from "../../public/constants";
-import {gql, useMutation} from "@apollo/client";
+import {gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
 import {SERIES_FRAGMENT} from "../../fragments";
 import {
     findByIdSeries,
@@ -18,6 +18,8 @@ import {
 import NotAccept from "../../component/NotAccept";
 import {buyEpisode, buyEpisodeVariables} from "../../__generated__/buyEpisode";
 import {useRouter} from "next/router";
+import {getPurchaseHistory, getPurchaseHistoryVariables} from "../../__generated__/getPurchaseHistory";
+import {getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
 
 export interface ISeries {
     series : findByIdSeries_findByIdSeries | null
@@ -55,20 +57,55 @@ export const BUY_EPISODE = gql`
     }
 `
 
+export const PURCHASE_HISTORY = gql`
+    query getPurchaseHistory($seriesId : Float!) {
+        getPurchaseHistory(seriesId : $seriesId)
+    }
+`
+
 
 const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
 
 
     const router = useRouter();
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+    const apolloClient = initializeApollo();
+
+    const {data : purchaseHistoryData} = useQuery<getPurchaseHistory , getPurchaseHistoryVariables>(PURCHASE_HISTORY , {
+        skip: !isLoggedIn,
+        variables : {
+            seriesId
+        }
+    })
+
+
 
     const [buyEpisodeMutation] = useMutation<buyEpisode,buyEpisodeVariables>(BUY_EPISODE , {
-        onCompleted : data => {
+        onCompleted : async data => {
             if (!data.buyEpisode.ok) {
                 return alert(data.buyEpisode.error);
             }
+
+            const queryResult = apolloClient.readQuery({
+                query : PURCHASE_HISTORY ,
+                variables : {
+                    seriesId
+                }
+            });
+
+            apolloClient.writeQuery({
+                query : PURCHASE_HISTORY,
+                variables : {
+                    seriesId
+                },
+                data : {
+                    getPurchaseHistory : [...queryResult.getPurchaseHistory,data.buyEpisode.buyEpisodeId]
+                }
+            })
             return router.push(`/series/${seriesId}/${data.buyEpisode.buyEpisodeId}`)
-        }
+        },
     });
+
 
 
     const [orderBy , setOrderBy] = useState<boolean>(true);
@@ -98,6 +135,10 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
                 }
             }
         })
+    }
+
+    const directGotoEpisode = (id : number) => {
+        return router.push(`/series/${seriesId}/${id}`)
     }
 
 
@@ -184,13 +225,22 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
                         {
                             series.episode.map((episode) => {
                                 return (
-                                    <div className={'flex items-center mt-1.5'} key={episode.episode} onClick={() => buyEpisode(episode.id,episode.episode,episode.howMuchCoin)}>
+                                    <div
+                                        className={purchaseHistoryData?.getPurchaseHistory.includes(episode.id) ? 'flex items-center mt-1.5 bg-gray-100' : 'flex items-center mt-1.5'}
+                                        key={episode.episode}
+                                        onClick={() => purchaseHistoryData?.getPurchaseHistory.includes(episode.id) ? directGotoEpisode(episode.id) : buyEpisode(episode.id, episode.episode, episode.howMuchCoin)}>
                                         <div
                                             className={'h-16 w-2/12 md:h-16 md:w-1/12 bg-cover bg-center rounded overflow-hidden'}
                                             style={{'backgroundImage': `url(${series.thumbnail})`}}/>
-                                        <div className={'flex flex-col text-xs ml-2'}>
-                                            <h4>{series.name} - {episode.episode}화</h4>
-                                            <span className={'mt-0.5'}>{moment(episode.createdAt).format('YYYY.MM.DD')}</span>
+                                        <div className={'flex flex-col text-xs ml-2 w-full'}>
+                                            <div className={'flex w-full justify-between'}>
+                                                <h4>{series.name} - {episode.episode}화</h4>
+                                                {purchaseHistoryData?.getPurchaseHistory.includes(episode.id) &&
+                                                <span className={'mr-3 text-2xs text-gray-500'}>다운 완료</span>}
+                                            </div>
+
+                                            <span
+                                                className={'mt-0.5'}>{moment(episode.createdAt).format('YYYY.MM.DD')}</span>
                                         </div>
                                     </div>
                                 )

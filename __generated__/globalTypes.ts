@@ -18,6 +18,11 @@ export enum UserRole {
   User = "User",
 }
 
+export interface BuyEpisodeInput {
+  seriesId: number;
+  episodeId: number;
+}
+
 export interface CreateAccountInput {
   email: string;
   password: string;

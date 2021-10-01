@@ -8,7 +8,7 @@ import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser , faComment} from "@fortawesome/free-solid-svg-icons";
 import {addComma, addUnit} from "../../public/constants";
-import {gql} from "@apollo/client";
+import {gql, useMutation} from "@apollo/client";
 import {SERIES_FRAGMENT} from "../../fragments";
 import {
     findByIdSeries,
@@ -16,11 +16,13 @@ import {
     findByIdSeriesVariables
 } from "../../__generated__/findByIdSeries";
 import NotAccept from "../../component/NotAccept";
+import {buyEpisode, buyEpisodeVariables} from "../../__generated__/buyEpisode";
+import {useRouter} from "next/router";
 
 export interface ISeries {
     series : findByIdSeries_findByIdSeries | null
     episodeLength : number
-    id : number
+    seriesId : number
 }
 
 export const FIND_BY_ID_SERIES = gql`
@@ -29,8 +31,10 @@ export const FIND_BY_ID_SERIES = gql`
             ...SeriesParts
             serialization
             episode {
+                id
                 episode
                 createdAt
+                howMuchCoin
             }
             writer {
                 name
@@ -41,12 +45,60 @@ export const FIND_BY_ID_SERIES = gql`
 `
 
 
-// export const BUY_EPISODE = gql`
-//
-// `
+export const BUY_EPISODE = gql`
+    mutation buyEpisode($buyEpisodeInput: BuyEpisodeInput!) {
+        buyEpisode(buyEpisodeInput : $buyEpisodeInput) {
+            ok
+            error
+            buyEpisodeId
+        }
+    }
+`
 
 
-const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
+const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
+
+
+    const router = useRouter();
+
+    const [buyEpisodeMutation] = useMutation<buyEpisode,buyEpisodeVariables>(BUY_EPISODE , {
+        onCompleted : data => {
+            if (!data.buyEpisode.ok) {
+                return alert(data.buyEpisode.error);
+            }
+            return router.push(`/series/${seriesId}/${data.buyEpisode.buyEpisodeId}`)
+        }
+    });
+
+
+    const [orderBy , setOrderBy] = useState<boolean>(true);
+
+    const changeOrderBy = (value : string) => {
+        if (value === 'early') {
+            return setOrderBy(false);
+        }
+        if (value === 'latest') {
+            return setOrderBy(true)
+        }
+    }
+
+
+    const buyEpisode = async (episodeId: number, episode: number, howMuchCoin: number) => {
+        const confirm = window.confirm(`${episode}화를 열람하시겠습니까? ${howMuchCoin}코인이 소비됩니다.`);
+
+        if (!confirm) {
+            return
+        }
+
+        await buyEpisodeMutation({
+            variables: {
+                buyEpisodeInput: {
+                    episodeId,
+                    seriesId
+                }
+            }
+        })
+    }
 
 
     useEffect(() =>{
@@ -55,12 +107,9 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
         }
     },[])
 
+
     const [episodes , setEpisodes] = useState<findByIdSeries_findByIdSeries_episode[]>([]);
 
-    const changeOrderBy = () => {
-        const reverseEpisodes = episodes.reverse();
-        setEpisodes(() => [...reverseEpisodes]);
-    }
 
 
     if (episodes.length === 0 || !series) {
@@ -99,7 +148,7 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
                                         <span className={'mt-1.5 text-xs md:text-sm'}>{series.writer.name} 작가</span>
                                     </div>
                                     <div className={'flex'}>
-                                        <Link href={`/series/description/${id}`}>
+                                        <Link href={`/series/description/${seriesId}`}>
                                             <a>
                                                 <button className={'text-xs px-2 py-1 border-solid border rounded text-gray-500 border-gray-300 md:text-md md:border-1'}>작품소개</button>
                                             </a>
@@ -126,26 +175,29 @@ const Series : NextPage<ISeries> = ({series,episodeLength,id}) => {
                 <article className={'w-full my-2 md:py-3 py-2 px-4 bg-white border-b border-gray-200'}>
                     <div className={'w-full pt-1 pb-4 flex items-center justify-between'}>
                         <span className={'text-gray-500 text-sm md:text-sm체'}>전체 ({episodeLength})</span>
-                        <select className={'text-gray-500 text-xs md:text-sm'} onChange={(e) => changeOrderBy()}>
-                            <option value={'early'}>첫편부터</option>
+                        <select className={'text-gray-500 text-xs md:text-sm'} onChange={(e) => changeOrderBy(e.target.value)}>
                             <option value={'latest'}>최신순</option>
+                            <option value={'early'}>첫편부터</option>
                         </select>
                     </div>
-                    {
-                        episodes.map((episode) => {
-                            return (
-                                <div className={'flex items-center mt-1.5'} key={episode.episode}>
-                                    <div
-                                        className={'h-16 w-2/12 md:h-16 md:w-1/12 bg-cover bg-center rounded overflow-hidden'}
-                                        style={{'backgroundImage': `url(${series.thumbnail})`}}/>
-                                    <div className={'flex flex-col text-xs ml-2'}>
-                                        <h4>{series.name} - {episode.episode}화</h4>
-                                        <span className={'mt-0.5'}>{moment(episode.createdAt).format('YYYY.MM.DD')}</span>
+                    <div className={`flex ${orderBy ? ' flex-col' : ' flex-col-reverse'}`}>
+                        {
+                            series.episode.map((episode) => {
+                                return (
+                                    <div className={'flex items-center mt-1.5'} key={episode.episode} onClick={() => buyEpisode(episode.id,episode.episode,episode.howMuchCoin)}>
+                                        <div
+                                            className={'h-16 w-2/12 md:h-16 md:w-1/12 bg-cover bg-center rounded overflow-hidden'}
+                                            style={{'backgroundImage': `url(${series.thumbnail})`}}/>
+                                        <div className={'flex flex-col text-xs ml-2'}>
+                                            <h4>{series.name} - {episode.episode}화</h4>
+                                            <span className={'mt-0.5'}>{moment(episode.createdAt).format('YYYY.MM.DD')}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            )
-                        })
-                    }
+                                )
+                            })
+                        }
+                    </div>
+
                 </article>
             </section>
         </>
@@ -169,11 +221,12 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         }
     });
 
+
     return {
         props: {
             series: data.findByIdSeries,
             episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
-            id : +id,
+            seriesId : +id,
         },
     }
 }

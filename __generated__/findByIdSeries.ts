@@ -9,8 +9,10 @@
 
 export interface findByIdSeries_findByIdSeries_episode {
   __typename: "Episode";
+  id: number;
   episode: number;
   createdAt: any;
+  howMuchCoin: number;
 }
 
 export interface findByIdSeries_findByIdSeries_writer {

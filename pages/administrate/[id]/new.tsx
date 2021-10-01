@@ -28,7 +28,7 @@ const CREATE_EPISODE = gql`
 
 
 
-const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,id}) => {
+const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
@@ -285,7 +285,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         props: {
             series: data.findByIdSeries,
             episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
-            id : +id,
+            seriesId : +id,
         },
     }
 }

@@ -60,9 +60,9 @@ const Description: NextPage<IDescription> = ({data}) => {
                             <li className={'w-full flex mt-1'}>
                                 <span className={'font-bold'} style={{'minWidth': '32%'}}>전자책 정가</span>
                                 <span>{data?.findByIdSeries?.category?.mainCategory === 'Novel' ?
-                                    "100원/회차 당"
+                                    "1코인/회차 당"
                                     :
-                                    "200원/회차 당"
+                                    "2코인/회차 당"
                                 }</span>
                             </li>
                             <li className={'w-full flex mt-1'}>

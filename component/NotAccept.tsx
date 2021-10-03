@@ -6,7 +6,7 @@ import React from "react";
 const NotAccept : NextPage = () => {
     return (
         <>
-            <div className={'mx-auto bg-white'} style={{'maxWidth': '950px '}}>
+            <div className={'mx-auto bg-white'} style={{'maxWidth': '950px'}}>
                 <Header/>
                 <div className={'flex flex-col h-screen'}>
                     <div className={'w-full h-full flex items-center justify-center'}>

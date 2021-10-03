@@ -54,6 +54,11 @@ export interface episodeUpdateInput {
   contents: string[];
 }
 
+export interface seriesEpisodeIdsInput {
+  seriesId: number;
+  episodeId: number;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

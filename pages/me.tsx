@@ -80,7 +80,7 @@ const me: NextPage<IMe> = () => {
                         </div>
                         <div className={'flex border border-solid border-gray-200 items-center py-2 px-4 border-t-0'}>
                             <span className={'text-gray-400 text-sm'} style={{'minWidth': '150px'}}>석카오계정 이메일</span>
-                            <span className={'text-left text-gray-800 text-sm'}>{data?.me.email}</span>
+                            <span className={'text-left text-gray-800 text-sm truncate'}>{data?.me.email}</span>
                         </div>
 
                         <Link href={"/edit-profile"}>

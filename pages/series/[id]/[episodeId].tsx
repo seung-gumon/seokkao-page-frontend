@@ -82,13 +82,6 @@ const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         )
     }
 
-    if (error && !data) {
-        return (
-            <NotAccept/>
-        )
-    }
-
-
     if (loading) {
         return (
             <>
@@ -101,6 +94,14 @@ const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
             </>
         )
     }
+
+
+    if (error || !data?.getEpisodeBySeriesIdAndEpisodeId) {
+        return (
+            <NotAccept/>
+        )
+    }
+
 
 
 

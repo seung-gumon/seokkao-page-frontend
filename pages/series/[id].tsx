@@ -121,13 +121,25 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
 
 
     const buyEpisode = async (episodeId: number, episode: number, howMuchCoin: number) => {
+
+        if (episode === 1) {
+            return await buyEpisodeMutation({
+                variables: {
+                    buyEpisodeInput: {
+                        episodeId,
+                        seriesId
+                    }
+                }
+            })
+        }
+
         const confirm = window.confirm(`${episode}화를 열람하시겠습니까? ${howMuchCoin}코인이 소비됩니다.`);
 
         if (!confirm) {
             return
         }
 
-        await buyEpisodeMutation({
+        return await buyEpisodeMutation({
             variables: {
                 buyEpisodeInput: {
                     episodeId,
@@ -206,8 +218,13 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
                     </div>
                     <span className={'ml-1.5 md:ml-3 text-sm font-bold'}>{addComma(series.like)} 명이 보는 중</span>
                 </article>
-                <article className={'w-full flex items-center mb-2'}>
-                    <button className={'bg-yellow-300 w-full mx-2 md:mx-0 py-3'}>첫편보기</button>
+                <article className={'w-full flex items-center bg-yellow-300 '}>
+                    <Link href={`/series/${seriesId}/1`}>
+                        <a className={'w-full py-3 md:mx-0 '}>
+                            <button className={'bg-yellow-300 w-full '}>첫편보기</button>
+                        </a>
+                    </Link>
+
                 </article>
 
             </section>
@@ -230,11 +247,11 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
                                         key={episode.episode}
                                         onClick={() => purchaseHistoryData?.getPurchaseHistory.includes(episode.id) ? directGotoEpisode(episode.id) : buyEpisode(episode.id, episode.episode, episode.howMuchCoin)}>
                                         <div
-                                            className={'h-16 w-2/12 md:h-16 md:w-1/12 bg-cover bg-center rounded overflow-hidden'}
+                                            className={'h-16 w-20 md:h-16 md:w-1/12 bg-cover bg-center rounded overflow-hidden'}
                                             style={{'backgroundImage': `url(${series.thumbnail})`}}/>
                                         <div className={'flex flex-col text-xs ml-2 w-full'}>
                                             <div className={'flex w-full justify-between'}>
-                                                <h4>{series.name} - {episode.episode}화</h4>
+                                                <h4>{series.name} - {episode.episode}화 {episode.episode === 1 && <span className={'text-center text-white bg-rose-500 px-0.5'}>무료</span>}</h4>
                                                 {purchaseHistoryData?.getPurchaseHistory.includes(episode.id) &&
                                                 <span className={'mr-3 text-2xs text-gray-500'}>다운 완료</span>}
                                             </div>

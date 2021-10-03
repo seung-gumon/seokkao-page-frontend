@@ -16,8 +16,8 @@ const PleaseLogin : NextPage = () => {
 
     return (
         <>
-            <Header/>
-            <div className={'flex flex-col h-screen'}>
+            <div className={'flex flex-col h-screen w-full mx-auto'} style={{'maxWidth': '950px'}}>
+                <Header/>
                 <div className={'w-full h-full flex items-center justify-center'}>
                     <button onClick={removeLoginToken} className={'bg-amber-300 px-3 py-2 cursor-pointer'}>로그인이 필요합니다</button>
                 </div>

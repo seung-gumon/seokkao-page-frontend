@@ -48,7 +48,7 @@ export const Header: NextPage<IHeader> = () => {
 
 
     return (
-        <header className={'bg-white'}>
+        <header className={'bg-white w-full'}>
             <div className={'w-full sticky flex justify-between px-3 items-center'}>
                 <Link href={"/"}>
                     <a className={'mt-3'}>

@@ -196,7 +196,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
         )
     }
 
-    if(error) {
+    if(error && !data) {
         return (
             <NotAccept/>
         )

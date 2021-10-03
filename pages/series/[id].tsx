@@ -253,7 +253,7 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
                                             <div className={'flex w-full justify-between'}>
                                                 <h4>{series.name} - {episode.episode}화 {episode.episode === 1 && <span className={'text-center text-white bg-rose-500 px-0.5'}>무료</span>}</h4>
                                                 {purchaseHistoryData?.getPurchaseHistory.includes(episode.id) &&
-                                                <span className={'mr-3 text-2xs text-gray-500'}>다운 완료</span>}
+                                                <span className={'mr-3 text-2xs text-gray-500'}>열람 완료</span>}
                                             </div>
 
                                             <span

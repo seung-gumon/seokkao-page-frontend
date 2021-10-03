@@ -11,7 +11,7 @@ import {
 import PleaseLogin from "../../../component/PleaseLogin";
 import NotAccept from "../../../component/NotAccept";
 import HTMLFlipBook from 'react-pageflip';
-import {faBook, faList} from "@fortawesome/free-solid-svg-icons";
+import {faList} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/router";
 import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";

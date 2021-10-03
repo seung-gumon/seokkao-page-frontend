@@ -54,6 +54,11 @@ export interface episodeUpdateInput {
   contents: string[];
 }
 
+export interface prevOrNextEpisodeInput {
+  seriesId: number;
+  episode: number;
+}
+
 export interface seriesEpisodeIdsInput {
   seriesId: number;
   episodeId: number;

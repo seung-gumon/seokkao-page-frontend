@@ -3,7 +3,7 @@ import Head from "next/head";
 import React, {useEffect, useState} from "react";
 import {Header} from "../../../component/Header";
 import {isLoggedInVar} from "../../../apolloClient";
-import {gql, useQuery, useReactiveVar} from "@apollo/client";
+import {FetchResult, gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
 import {
     getEpisodeBySeriesIdAndEpisodeId,
     getEpisodeBySeriesIdAndEpisodeIdVariables
@@ -11,7 +11,10 @@ import {
 import PleaseLogin from "../../../component/PleaseLogin";
 import NotAccept from "../../../component/NotAccept";
 import HTMLFlipBook from 'react-pageflip';
-
+import {faBook, faList} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useRouter} from "next/router";
+import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";
 
 interface IUserEpisode {
     seriesId : number
@@ -31,10 +34,22 @@ export const EPISODE_DATA = gql`
     }
 `
 
+export const PREV_OR_NEXT_EPISODE = gql`
+    mutation prevOrNextEpisode($prevOrNext: String!,$prevOrNextEpisode: prevOrNextEpisodeInput!) {
+        prevOrNextEpisode(prevOrNext : $prevOrNext , prevOrNextEpisode : $prevOrNextEpisode) {
+            ok
+            error
+        }
+    }
+`
 
-const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
+
+
+
+const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+    const router = useRouter();
 
     const {
         data,
@@ -50,6 +65,8 @@ const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         }
     });
 
+    const [goToPrevOrNextPage] = useMutation<prevOrNextEpisode,prevOrNextEpisodeVariables>(PREV_OR_NEXT_EPISODE)
+
     const [page , setPage] = useState<number>(1);
     const [totalPage , setTotalPage] = useState<number>(0);
 
@@ -63,6 +80,63 @@ const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
             return setPage(currentPage + 1);
         }
     }
+
+
+    const gotoSeriesList = () => {
+        return router.push(`/series/${seriesId}`);
+    }
+
+    const changePageFetchResult = async (req : FetchResult<prevOrNextEpisode> , episode : number) => {
+        const ok = req.data?.prevOrNextEpisode.ok;
+        const episodeId = req.data?.prevOrNextEpisode.error;
+        if (!ok) {
+            return alert(req.data?.prevOrNextEpisode.error);
+        }
+        return router.push(`/series/${seriesId}/${Number(episodeId)}`);
+    }
+
+
+    const nextEpisode = async () => {
+        const confirm = window.confirm("다음화를 보시겠습니까 ?");
+        if (!confirm) {
+            return
+        }
+        if (data?.getEpisodeBySeriesIdAndEpisodeId) {
+            const nextEpisode = data?.getEpisodeBySeriesIdAndEpisodeId?.episode + 1;
+            const req: FetchResult<prevOrNextEpisode> = await goToPrevOrNextPage({
+                variables: {
+                    prevOrNext: 'next',
+                    prevOrNextEpisode: {
+                        seriesId: seriesId,
+                        episode: nextEpisode
+                    }
+                },
+            });
+            return await changePageFetchResult(req , nextEpisode);
+        }
+    }
+
+    const prevEpisode = async () => {
+        const confirm = window.confirm("이전화를 보시겠습니까 ?");
+        if (!confirm) {
+            return
+        }
+
+        if (data?.getEpisodeBySeriesIdAndEpisodeId) {
+            const prevEpisode = data?.getEpisodeBySeriesIdAndEpisodeId?.episode - 1;
+            const req: FetchResult<prevOrNextEpisode> = await goToPrevOrNextPage({
+                variables : {
+                    prevOrNext : 'prev',
+                    prevOrNextEpisode : {
+                        seriesId : seriesId,
+                        episode : prevEpisode
+                    }
+                },
+            });
+            return await changePageFetchResult(req , prevEpisode);
+        }
+    }
+
 
     useEffect(() => {
         if (data?.getEpisodeBySeriesIdAndEpisodeId) {
@@ -140,16 +214,24 @@ const UserNovelEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                             })
                         }
                     </HTMLFlipBook>
-                    <div className='flex items-center justify-center py-1.5 text-gray-500'>
-                        [<span>{page} </span> 페이지 <span className={'mx-1.5'}>/</span><span>총 {totalPage}페이지</span>]
+                    <div className='flex flex-col items-center justify-center py-1.5 text-gray-500'>
+                        <div>
+                            [<span>{page} </span> 페이지 <span className={'mx-1.5'}>/</span><span>총 {totalPage}페이지</span>]
+                        </div>
+                        <div className={'flex items-center justify-evenly py-1.5 w-full'}>
+                            <FontAwesomeIcon icon={faList} className={'mr-1 text-gray-600 text-md'} onClick={gotoSeriesList}/>
+                            <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={prevEpisode}>&larr; 이전편</span>
+                            <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={nextEpisode}>다음편 &rarr;</span>
+                        </div>
                     </div>
+
                 </section>
             </section>
         </>
     )
 }
 
-export default UserNovelEpisode
+export default UserEpisode
 
 
 

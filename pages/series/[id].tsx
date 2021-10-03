@@ -19,7 +19,7 @@ import NotAccept from "../../component/NotAccept";
 import {buyEpisode, buyEpisodeVariables} from "../../__generated__/buyEpisode";
 import {useRouter} from "next/router";
 import {getPurchaseHistory, getPurchaseHistoryVariables} from "../../__generated__/getPurchaseHistory";
-import {getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
+
 
 export interface ISeries {
     series : findByIdSeries_findByIdSeries | null

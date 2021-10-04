@@ -26,7 +26,6 @@ export interface findByIdSeries_findByIdSeries {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
   /**
    * 언제 연재하는지

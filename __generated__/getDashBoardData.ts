@@ -32,7 +32,6 @@ export interface getDashBoardData_seriesDashBoardData_series {
    */
   serialization: string;
   like: number;
-  view: number;
   category: getDashBoardData_seriesDashBoardData_series_category;
   episode: getDashBoardData_seriesDashBoardData_series_episode[];
 }
@@ -41,6 +40,7 @@ export interface getDashBoardData_seriesDashBoardData {
   __typename: "PurchaseHistoryOutput";
   date: string[];
   count: number[];
+  view: number;
   series: getDashBoardData_seriesDashBoardData_series;
 }
 

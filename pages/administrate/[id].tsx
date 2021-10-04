@@ -44,13 +44,13 @@ export const GET_DASHBOARD_DATA = gql`
         seriesDashBoardData(purChaseInput : $purchaseInput) {
             date
             count
+            view
             series {
                 thumbnail
                 name
                 description
                 serialization
                 like
-                view
                 category {
                     id
                     mainCategory
@@ -261,7 +261,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                                 <FontAwesomeIcon icon={faEye} className={'mr-1 text-gray-600'}/>
                                 <h5 className={'font-bold uppercase text-gray-600'}>열람된 총 횟수</h5>
                             </div>
-                            <h3 className={'font-bold text-3xl text-gray-600'}>{addComma(Number(data?.seriesDashBoardData.series.view))}</h3>
+                            <h3 className={'font-bold text-3xl text-gray-600'}>{addComma(Number(data?.seriesDashBoardData.view))}</h3>
                         </div>
                     </div>
                     <div className=" w-full md:w-2/6 lg:w-4/12 px-2 mb-4">

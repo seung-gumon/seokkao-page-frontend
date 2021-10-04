@@ -2,7 +2,7 @@ import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult,
 import Head from "next/head";
 import React, {useEffect, useState} from "react";
 import {Header} from "../../../component/Header";
-import {isLoggedInVar} from "../../../apolloClient";
+import {initializeApollo, isLoggedInVar} from "../../../apolloClient";
 import {FetchResult, gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
 import {
     getEpisodeBySeriesIdAndEpisodeId,
@@ -15,6 +15,7 @@ import {faList} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/router";
 import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";
+import {PURCHASE_HISTORY} from "../[id]";
 
 interface IUserEpisode {
     seriesId : number
@@ -69,6 +70,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
     const [page , setPage] = useState<number>(1);
     const [totalPage , setTotalPage] = useState<number>(0);
+    const apolloClient = initializeApollo();
 
     const onPage = (e: any) => {
         const clientWidth = document.documentElement.clientWidth;
@@ -86,12 +88,31 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         return router.push(`/series/${seriesId}`);
     }
 
-    const changePageFetchResult = async (req : FetchResult<prevOrNextEpisode> , episode : number) => {
+    const changePageFetchResult = async (req: FetchResult<prevOrNextEpisode>) => {
         const ok = req.data?.prevOrNextEpisode.ok;
         const episodeId = req.data?.prevOrNextEpisode.error;
+
         if (!ok) {
             return alert(req.data?.prevOrNextEpisode.error);
         }
+
+        const queryResult = await apolloClient.readQuery({
+            query: PURCHASE_HISTORY,
+            variables: {
+                seriesId
+            }
+        });
+
+        apolloClient.writeQuery({
+            query: PURCHASE_HISTORY,
+            variables: {
+                seriesId
+            },
+            data: {
+                getPurchaseHistory: [...queryResult.getPurchaseHistory, Number(episodeId)]
+            }
+        })
+
         return router.push(`/series/${seriesId}/${Number(episodeId)}`);
     }
 
@@ -112,7 +133,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                     }
                 },
             });
-            return await changePageFetchResult(req , nextEpisode);
+            return await changePageFetchResult(req);
         }
     }
 
@@ -125,15 +146,15 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         if (data?.getEpisodeBySeriesIdAndEpisodeId) {
             const prevEpisode = data?.getEpisodeBySeriesIdAndEpisodeId?.episode - 1;
             const req: FetchResult<prevOrNextEpisode> = await goToPrevOrNextPage({
-                variables : {
-                    prevOrNext : 'prev',
-                    prevOrNextEpisode : {
-                        seriesId : seriesId,
-                        episode : prevEpisode
+                variables: {
+                    prevOrNext: 'prev',
+                    prevOrNextEpisode: {
+                        seriesId: seriesId,
+                        episode: prevEpisode
                     }
                 },
             });
-            return await changePageFetchResult(req , prevEpisode);
+            return await changePageFetchResult(req);
         }
     }
 

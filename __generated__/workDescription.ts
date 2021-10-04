@@ -26,7 +26,6 @@ export interface workDescription_findByIdSeries {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
   category: workDescription_findByIdSeries_category;
   writer: workDescription_findByIdSeries_writer;

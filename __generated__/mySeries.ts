@@ -18,7 +18,6 @@ export interface mySeries_mySeries_series {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
   category: mySeries_mySeries_series_category;
 }

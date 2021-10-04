@@ -13,7 +13,6 @@ export interface mainPage_mainBanner {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
 }
 
@@ -28,7 +27,6 @@ export interface mainPage_orderByPopular_cartoon {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
   writer: mainPage_orderByPopular_cartoon_writer;
 }
@@ -44,7 +42,6 @@ export interface mainPage_orderByPopular_novel {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
   writer: mainPage_orderByPopular_novel_writer;
 }

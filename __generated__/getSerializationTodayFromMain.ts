@@ -13,7 +13,6 @@ export interface getSerializationTodayFromMain_getSerializationTodayFromMain {
   name: string;
   thumbnail: string;
   description: string;
-  view: number;
   like: number;
 }
 

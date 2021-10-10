@@ -114,9 +114,19 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                             )
                         })
                             :
+                            <div>
                             <span className={'text-xs text-gray-700 md:text-lg'}>
                                 집필하신 작품이 없습니다. 새로운 작품을 집필해보세요 ✏️
                             </span>
+                                <Link href={"/administrate/new"}>
+                                    <a>
+                                        <button className={'bg-amber-300 ml-3 rounded px-1.5 text-white'}>
+                                            새로운 작품 집필하기
+                                        </button>
+                                    </a>
+                                </Link>
+                            </div>
+
                     }
                 </div>
             </div>

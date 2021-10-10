@@ -17,6 +17,7 @@ import {faUser, faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons"
 import Link from "next/link";
 import NotAccept from "../../component/NotAccept";
 import {updateNovelProfileImage, updateNovelProfileImageVariables} from "../../__generated__/updateNovelProfileImage";
+import {updateSerialization, updateSerializationVariables} from "../../__generated__/updateSerialization";
 
 
 
@@ -74,6 +75,15 @@ const UPDATE_NOVEL_PROFILE_IMAGE = gql`
     }
 `
 
+const UPDATE_SERIALIZATION = gql`
+    mutation updateSerialization($seriesId : Float! , $day : String!) {
+        updateSerialization(seriesId : $seriesId , day : $day) {
+            ok
+            error
+        }
+    }
+`
+
 
 const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 
@@ -81,6 +91,9 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     const apolloClient = initializeApollo();
 
 
+
+
+    const [day , setDay] = useState<string[]>(['월','화','수','목','금','토','일']);
 
 
     const [DashBoardStartDate, setDashBoardStartDate] = useState(new Date(moment().add(-30, 'days').format('YYYY/MM/DD')));
@@ -97,7 +110,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                 borderColor: "rgba(252, 211, 77,1)"
             },
         ]
-    })
+    });
+    const [serialization , setSerialization] = useState<string>("");
 
 
     const {
@@ -168,6 +182,45 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     });
 
 
+    const [fetchUpdateDays] = useMutation<updateSerialization , updateSerializationVariables>(UPDATE_SERIALIZATION , {
+        onCompleted: async (data) => {
+            if (data.updateSerialization.ok) {
+                const queryResult = apolloClient.readQuery({
+                    query: GET_DASHBOARD_DATA, variables: {
+                        purchaseInput: {
+                            seriesId: id,
+                            startDate: moment(DashBoardStartDate).format('YYYY-MM-DD'),
+                            endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
+                        }
+                    }
+                })
+                await apolloClient.writeQuery({
+                    query: GET_DASHBOARD_DATA,
+                    variables: {
+                        purchaseInput: {
+                            seriesId: id,
+                            startDate: moment(DashBoardStartDate).format('YYYY-MM-DD'),
+                            endDate: moment(DashBoardEndDate).format('YYYY-MM-DD')
+                        }
+                    },
+                    data: {
+                        seriesDashBoardData : {
+                            ...queryResult.seriesDashBoardData,
+                            series: {
+                                ...queryResult.seriesDashBoardData.series,
+                                serialization : serialization
+                            }
+                        }
+                    }
+                });
+                return alert("연재 날짜가 업데이트 되었습니다.")
+            } else {
+                return alert(`${data.updateSerialization.error}`)
+            }
+        }
+    })
+
+
     const uploadProfileImage = async (e : ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files
         if (file) {
@@ -177,6 +230,43 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                 variables : {
                     novelProfileImage,
                     seriesId : id
+                }
+            })
+        }
+    }
+
+
+    const changeSerialization = async (day: string) => {
+        if (data?.seriesDashBoardData.series.serialization.includes(day)) {
+            const confirm = window.confirm(`${day}요일을 연재 날에서 제외 하시겠습니까 ?`);
+            if (!confirm) {
+                return
+            }
+            const arrSerialization = data?.seriesDashBoardData?.series?.serialization.split("");
+            const minusDay = arrSerialization.filter((arrDay) => arrDay !== day);
+
+            setSerialization(() => minusDay.join(''));
+
+            await fetchUpdateDays({
+                variables: {
+                    day: minusDay.join(""),
+                    seriesId: +id
+                },
+            });
+        } else {
+            const confirm = window.confirm(`${day}요일을 연재 날에서 추가 하시겠습니까 ?`);
+            if (!confirm) {
+                return
+            }
+            const arrSerialization: any = data?.seriesDashBoardData?.series?.serialization.split("");
+            const addDay = [...arrSerialization, day];
+
+            setSerialization(() => addDay.join(''));
+
+            await fetchUpdateDays({
+                variables: {
+                    day: addDay.join(""),
+                    seriesId: +id
                 }
             })
         }
@@ -286,6 +376,19 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                     </div>
                 </div>
             </div>
+
+            <section className={'p-4 mx-auto my-1.5 bg-white'} style={{'maxWidth': '950px'}}>
+                <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md mb-3'}>연재 요일 (색칠된 부분이 연재되는 날)</h3>
+                <div className={'mt-1.5'}>
+                    {day.map((day:string , index : number) => {
+                        return (
+                            <span key={index} onClick={() => changeSerialization(day)}
+                                  className={`${data?.seriesDashBoardData.series.serialization.includes(day) ? 'bg-amber-300' : ''} mx-1 p-1.5 rounded bg-opacity-80 cursor-pointer`}>{day}</span>
+                        )
+                    })}
+                </div>
+
+            </section>
 
 
             <section className={'p-4 mx-auto bg-white'} style={{'maxWidth': '950px'}}>

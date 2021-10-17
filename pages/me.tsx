@@ -10,8 +10,7 @@ import {UserRole} from "../__generated__/globalTypes";
 import {isLoggedInVar} from "../apolloClient";
 import PleaseLogin from "../component/PleaseLogin";
 
-interface IMe {
-}
+
 
 export const ME_QUERY = gql`
     query meQuery {
@@ -25,7 +24,7 @@ export const ME_QUERY = gql`
     }
 `;
 
-const me: NextPage<IMe> = () => {
+const me = () => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 

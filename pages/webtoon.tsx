@@ -1,60 +1,28 @@
-import {
-    NextPage,
-    GetStaticProps,
-    GetStaticPropsContext,
-    GetStaticPropsResult,
-} from "next";
+import {GetStaticProps, GetStaticPropsContext, GetStaticPropsResult, NextPage} from "next";
+import {initializeApollo} from "../apolloClient";
+import moment from "moment";
+import {mainPage, mainPageVariables} from "../__generated__/mainPage";
+import {MAIN_PAGE_QUERY} from "./index";
+import {useQuery} from "@apollo/client";
+import {meQuery} from "../__generated__/meQuery";
+import {ME_QUERY} from "./me";
+import React, {useState} from "react";
+import Head from "next/head";
 import {Header} from "../component/Header";
 import SubHeader from "../component/SubHeader";
-import Head from "next/head";
-import React, {useState} from "react";
 import Slick from "../component/Slick";
-import 'moment/locale/ko';
-import {initializeApollo} from "../apolloClient";
 import MiddleCategory from "../component/MiddleCategory";
 import OrderContainer from "../component/OrderContainer";
 import ContentsContainer from "../component/ContentsContainer";
 import AdBanner from "../component/AdBanner";
 import CommonListContentsBox from "../component/CommonListContentsBox";
-import {gql, useQuery} from "@apollo/client";
-import {meQuery} from "../__generated__/meQuery";
-import {ME_QUERY} from "./me";
-import {SERIES_FRAGMENT} from "../fragments";
-import {mainPage, mainPageVariables} from "../__generated__/mainPage";
-import moment from "moment";
 
-
-interface IIndex {
+interface IWebtoon {
     mainPageData: mainPage
 }
 
 
-export const MAIN_PAGE_QUERY = gql`
-    query mainPage($today : String!) {
-        mainBanner {
-            ...SeriesParts
-        }
-        orderByPopular(today : $today) {
-            cartoon {
-                ...SeriesParts
-                writer {
-                    name
-                }
-            }
-            novel {
-                ...SeriesParts
-                writer {
-                    name
-                }
-            }
-        }
-    }
-    ${SERIES_FRAGMENT}
-`
-
-
-const Index: NextPage<IIndex> = ({mainPageData}) => {
-
+const Webtoon: NextPage<IWebtoon> = ({mainPageData}) => {
 
     useQuery<meQuery>(ME_QUERY, {
         onError: error => {
@@ -62,7 +30,7 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
                 localStorage.removeItem('login-token');
             }
         }
-    });
+    })
 
 
     const [today, setToday] = useState<string>('');
@@ -106,10 +74,10 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
 }
 
 
-export default Index
+export default Webtoon
 
 
-export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IIndex>> => {
+export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<IWebtoon>> => {
 
     const apolloClient = initializeApollo();
     const today = moment().format('dddd');
@@ -122,10 +90,11 @@ export const getStaticProps: GetStaticProps = async (context: GetStaticPropsCont
         }
     });
 
+
     return {
         props: {
             mainPageData: data
         },
-        revalidate: 40000
+        revalidate: 4000
     }
 }

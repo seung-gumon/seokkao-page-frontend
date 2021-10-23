@@ -1,5 +1,5 @@
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {initializeApollo, isLoggedInVar} from "../../apolloClient";
+import {initializeApollo, isLoggedInVar, LOCALSTORAGE_TOKEN} from "../../apolloClient";
 import moment from "moment";
 import Head from "next/head";
 import React, {useEffect, useState} from "react";
@@ -120,7 +120,18 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
     }
 
 
+    const loginValidationCheck = () => {
+        const loginToken = localStorage.getItem(LOCALSTORAGE_TOKEN);
+        if (!loginToken) {
+            alert("로그인을 먼저 해주세요 !");
+            return router.push("/login");
+        }
+    }
+
+
     const buyEpisode = async (episodeId: number, episode: number, howMuchCoin: number) => {
+
+        await loginValidationCheck();
 
         if (episode === 1) {
             return await buyEpisodeMutation({
@@ -149,7 +160,9 @@ const Series : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
         })
     }
 
-    const directGotoEpisode = (id : number) => {
+
+    const directGotoEpisode = async (id : number) => {
+        await loginValidationCheck();
         return router.push(`/series/${seriesId}/${id}`)
     }
 

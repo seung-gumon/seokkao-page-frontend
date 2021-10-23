@@ -163,7 +163,8 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         if (data?.getEpisodeBySeriesIdAndEpisodeId) {
             const clientWidth = document.documentElement.clientWidth;
             if (clientWidth >= 768) {
-                return setTotalPage(data?.getEpisodeBySeriesIdAndEpisodeId?.contents.length / 2);
+                const totalPage = data?.getEpisodeBySeriesIdAndEpisodeId?.contents.length === 1 ? 1 : data?.getEpisodeBySeriesIdAndEpisodeId?.contents.length / 2;
+                return setTotalPage(totalPage);
             } else {
                 return setTotalPage(data?.getEpisodeBySeriesIdAndEpisodeId?.contents.length / 1);
             }
@@ -225,7 +226,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                         maxShadowOpacity={0.1}
                         mobileScrollSupport={true}
                         onFlip={onPage}
-                    >
+                     >
                         {
                             data?.getEpisodeBySeriesIdAndEpisodeId?.contents.map((content: string, index) => {
                                 const imgAlt = `${data?.getEpisodeBySeriesIdAndEpisodeId?.series.name} ${data?.getEpisodeBySeriesIdAndEpisodeId?.episode}화${index + 1}page`
@@ -257,7 +258,6 @@ export default UserEpisode
 
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IUserEpisode>> => {
-
     const params = context.query;
 
 

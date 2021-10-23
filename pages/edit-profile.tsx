@@ -2,27 +2,57 @@ import Head from "next/head";
 import {Header} from "../component/Header";
 import Link from "next/link";
 import React, {useEffect} from "react";
-import {useQuery} from "@apollo/client";
+import {gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
 import {ME_QUERY} from "./me";
 import {meQuery} from "../__generated__/meQuery";
 import {useForm} from "react-hook-form";
 import {ErrorMessage} from "@hookform/error-message";
 import {EMAIL_PATTERN} from "../public/constants";
+import {editProfile, editProfileVariables} from "../__generated__/editProfile";
+import {initializeApollo, isLoggedInVar} from "../apolloClient";
+import PleaseLogin from "../component/PleaseLogin";
+import NotAccept from "../component/NotAccept";
+import {useRouter} from "next/router";
+import {MY_SERIES} from "./my-work";
 
 interface IMeForm {
     name: string
     email: string
 }
 
+const EDIT_PROFILE = gql`
+    mutation editProfile($editProfile: UpdateInput!) {
+        editProfile(input: $editProfile) {
+            ok
+            error
+        }
+    }
+`
+
 const EditProfile = () => {
 
 
-    const {data} = useQuery<meQuery>(ME_QUERY);
+    const {data , error} = useQuery<meQuery>(ME_QUERY);
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
+    const router = useRouter();
 
     const {register, handleSubmit, getValues, setValue, formState: {errors, isValid}} = useForm<IMeForm>({
         mode: "onChange",
         criteriaMode: 'all'
     })
+
+    const [editProfileMutation] = useMutation<editProfile, editProfileVariables>(EDIT_PROFILE , {
+        onCompleted : data => {
+            if (!data.editProfile.ok) {
+                return alert(data.editProfile.error);
+            }
+            return alert("프로필 수정을 완료하였습니다");
+        },
+        refetchQueries: [
+            {query: ME_QUERY},
+            {query: MY_SERIES}
+        ]
+    });
 
 
     useEffect(() => {
@@ -33,8 +63,24 @@ const EditProfile = () => {
 
     const updateMyProfile = async () => {
         const confirm = window.confirm("정보를 업데이트 하시겠습니까 ?");
-        if (!confirm) reutrn;
-        return alert("업데이트 짜란짜짠짠")
+        if (!confirm) return;
+
+        const {email, name} = getValues()
+        await editProfileMutation({
+            variables : {
+                editProfile : {
+                    email,
+                    name
+                }
+            }
+        })
+    }
+
+
+    if (!data || !isLoggedIn || error) {
+        return (
+            <NotAccept/>
+        )
     }
 
 
@@ -99,7 +145,7 @@ const EditProfile = () => {
                                 )
                             }}
                         />
-                        <div className={'bg-amber-300 hover:bg-amber-400 cursor-pointer w-full text-center mt-3 py-2 rounded-md'} onClick={updateMyProfile}>변경하기</div>
+                        <div className={`${isValid ? "bg-amber-300 hover:bg-amber-400 cursor-pointer" : 'bg-gray-200 pointer-events-none'} w-full text-center mt-3 py-2 rounded-md`} onClick={updateMyProfile}>변경하기</div>
                     </div>
 
                 </div>

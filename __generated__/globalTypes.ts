@@ -43,6 +43,11 @@ export interface PurChaseHistoryInput {
   endDate: string;
 }
 
+export interface UpdateInput {
+  email: string;
+  name: string;
+}
+
 export interface episodeCreateInput {
   episode: number;
   contents: string[];

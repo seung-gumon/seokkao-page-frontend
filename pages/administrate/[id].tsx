@@ -273,6 +273,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     }
 
 
+
+
     const CalenderCustomInput = forwardRef(({value, onClick}: any, ref: any) => (
         <button className="bg-amber-300 py-0.5 px-1 rounded text-white mx-1" onClick={onClick} ref={ref}>
             {value}
@@ -413,7 +415,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                     }
                 </div>
                     <div className={'flex flex-col'}>
-                        <Link href={`/administrate/${id}/new`}>
+                        <Link href={data?.seriesDashBoardData.series.category.mainCategory === 'Cartoon' ? `/administrate/${id}/webtoon/new` :`/administrate/${id}/new`}>
                             <a className={'w-full'}>
                                 <button
                                     className={'w-full bg-yellow-300 text-gray-600 rounded-lg py-2 mt-1.5 font-bold'}>

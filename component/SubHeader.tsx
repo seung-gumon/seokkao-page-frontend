@@ -1,7 +1,6 @@
 import {NextPage} from "next";
 import Link from "next/link";
 import {useRouter} from "next/router";
-import {useEffect} from "react";
 
 
 const SubHeader : NextPage = () => {
@@ -10,7 +9,6 @@ const SubHeader : NextPage = () => {
     const router = useRouter();
     const path = router.pathname;
 
-    console.log(path);
 
     return (
         <div className={'flex w-full bg-white'}>

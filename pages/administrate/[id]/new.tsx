@@ -89,7 +89,7 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
             const formBody = new FormData();
             formBody.append('file', imageFile);
 
-            const url = await (await fetch("http://localhost:5000/uploads/", {
+            const url = await (await fetch("http://localhost:5001/uploads/", {
                 method: "POST",
                 body: formBody
             })).json();
@@ -133,7 +133,7 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
         }
 
         const replaceImgSrc = imageSrc.replace('https://seungseokkakaopage.s3.amazonaws.com/', "");
-        const res = await fetch("http://localhost:5000/uploads/delete", {
+        const res = await fetch("http://localhost:5001/uploads/delete", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

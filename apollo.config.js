@@ -4,7 +4,7 @@ module.exports = {
         tagName: "gql",
         service: {
             name: 'seokkao-page',
-            url: "http://localhost:5000/graphql",
+            url: "http://localhost:5001/graphql",
         }
     }
 }

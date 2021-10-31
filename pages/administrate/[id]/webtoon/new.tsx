@@ -1,29 +1,89 @@
-import {NextPage} from "next";
+import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
 import PleaseLogin from "../../../../component/PleaseLogin";
 import React, {useCallback, useEffect, useState} from "react";
-import {useReactiveVar} from "@apollo/client";
+import {useMutation, useReactiveVar} from "@apollo/client";
 import {initializeApollo, isLoggedInVar} from "../../../../apolloClient";
 import Head from "next/head";
 import {Header} from "../../../../component/Header";
 import {useDropzone} from 'react-dropzone';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFileImage, faList} from "@fortawesome/free-solid-svg-icons";
+import {image} from "@nidi/html2canvas/dist/types/css/types/image";
+import {createEpisode, createEpisodeVariables} from "../../../../__generated__/createEpisode";
+import {GET_DASHBOARD_DATA} from "../../[id]";
+import moment from "moment";
+import {CREATE_EPISODE} from "../new";
+import {FIND_BY_ID_SERIES, ISeries} from "../../../series/[id]";
+import {findByIdSeries, findByIdSeriesVariables} from "../../../../__generated__/findByIdSeries";
 
-interface INewWebToonAdmin {
 
-}
 
-const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
+const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
     const apolloClient = initializeApollo();
 
 
-    const [images , setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<string[]>([]);
+    const [uploadLoading, setUploadLoading] = useState<boolean>(true);
+
+    const [createMutation] = useMutation<createEpisode, createEpisodeVariables>(CREATE_EPISODE, {
+        refetchQueries: [{
+            query: GET_DASHBOARD_DATA,
+            variables: {
+                purchaseInput: {
+                    seriesId: series?.id,
+                    startDate: moment((new Date(moment().add(-30, 'days').format('YYYY/MM/DD')))).format('YYYY-MM-DD'),
+                    endDate: moment(new Date(moment().format('YYYY/MM/DD'))).format('YYYY-MM-DD')
+                }
+            },
+        }],
+        onCompleted: data => {
+            if (data.createEpisode.ok) {
+                return alert("새로운 에피소드가 등록되었습니다.")
+            } else {
+                return alert('새로운 에피소드 등록 실패하였습니다.새로고침후 다시 시도 해주세요')
+            }
+        },
+    });
+
+
+    const deleteImage = async (index: number, imageSrc: string) => {
+        const confirm = window.confirm("삭제하시겠습니까 ?");
+
+        if (!confirm) {
+            return;
+        }
+
+        const replaceImgSrc = imageSrc.replace('https://seungseokkakaopage.s3.amazonaws.com/', "");
+        const res = await fetch("http://localhost:5001/uploads/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                imageSrc: replaceImgSrc
+            }),
+        });
+        if (res.ok) {
+            const deleteImage = images?.filter((image, filterIndex) => filterIndex !== index);
+            setImages(deleteImage);
+            return alert('이미지가 삭제되었습니다.')
+        } else if (!res.ok) {
+            return alert('이미지가 삭제되지 않았습니다. 새로고침후 다시 시도 해주세요')
+        }
+    }
 
 
     const onDrop = useCallback(async (acceptedFiles) => {
         try {
+            acceptedFiles.forEach((acceptedFile: File) => {
+                if (acceptedFile.size > 1 * 1024 * 1000) {
+                    return alert('최대 용량 크기는 1MB 입니다.');
+                }
+            })
+
+            setUploadLoading(false);
             const images: string[] = await Promise.all(acceptedFiles.map(async (image: string) => {
                 const formBody = new FormData();
                 const actualFile = image;
@@ -35,17 +95,32 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
                 })).json();
 
                 return url.url;
-            }))
+            }));
 
             setImages((prev: string[]) => [...prev, ...images]);
-
-        } catch(e) {
+            return setUploadLoading(() => true);
+        } catch (e) {
             return alert("이미지를 올릴 수 없습니다.");
         }
     }, [])
 
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
+    const createEpisode = async () => {
+        if (images.length === 0) return alert("업로드한 이미지가 없습니다.")
+
+        await createMutation({
+            variables: {
+                episodeCreateInput: {
+                    seriesId,
+                    episode: episodeLength + 1,
+                    contents: images
+                }
+            }
+        })
+    }
+
+
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
     if (!isLoggedIn) {
         return (
@@ -61,7 +136,8 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
             </Head>
             <div className={'mx-auto'} style={{'maxWidth': '950px '}}>
                 <Header/>
-                <div className={`w-full ${isDragActive ? 'bg-amber-500' : 'bg-amber-300'} flex items-center h-28 border rounded-lg mt-5`}>
+                <div
+                    className={`w-full ${isDragActive ? 'bg-amber-500' : 'bg-amber-300'} flex items-center h-28 border rounded-lg mt-5`}>
                     <div {...getRootProps()} className={'w-full h-full flex items-center justify-center'}>
                         <input {...getInputProps()} className={'w-full h-full'} accept={'image/jpeg'}/>
                         {
@@ -78,21 +154,35 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
                     </div>
                 </div>
 
-                <span className={'text-lg'}>
+                <span className={'text-xl my-3'}>
                     미리보기
                 </span>
+                {images.length === 0 && <div className={'flex flex-col'}><span>업로드한 이미지가 없습니다</span></div>}
+                {
+                    !uploadLoading ?
+                        <div className=" flex justify-center flex-col items-center text-gray-600">
+                            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-500"></div>
+                            이미지를 가져오는중입니다..
+                        </div>
+                        :
+                        <div className={'flex flex-col w-full'}>
+                            {
+                                images.map((imageSrc: string, index: number) => {
+                                    return (
+                                        <div key={index} className={'relative'}>
+                                            <button
+                                                onClick={() => deleteImage(index , imageSrc)}
+                                                className={'red absolute bg-red-500 rounded py-2 px-1.5 text-white'}>삭제
+                                            </button>
+                                            <img src={imageSrc} alt={`만화 ${index + 1}컷`}/>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                }
+                <button className={'bg-lime-400 hover:bg-lime-500 py-2 w-full rounded-md my-3'} onClick={() => createEpisode()}>저장하기</button>
 
-                <div className={'flex flex-col w-full h-10 bg-red-300'}>
-                    {
-                        images.map((image : string) => {
-                            return (
-                                <div>
-
-                                </div>
-                            )
-                        })
-                    }
-                </div>
             </div>
 
         </>
@@ -101,3 +191,27 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
 }
 
 export default NewWebToonAdmin
+
+
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
+    const apolloClient = initializeApollo();
+
+    const {id}: any = context.query;
+
+
+
+    const {data , error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
+        query: FIND_BY_ID_SERIES,
+        variables: {
+            seriesId: +id
+        }
+    });
+
+    return {
+        props: {
+            series: data.findByIdSeries,
+            episodeLength : data?.findByIdSeries?.episode?.length ?? 0,
+            seriesId : +id,
+        },
+    }
+}

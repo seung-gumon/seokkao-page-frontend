@@ -17,7 +17,7 @@ import moment from "moment";
 import {GET_DASHBOARD_DATA} from "../[id]";
 
 
-const CREATE_EPISODE = gql`
+export const CREATE_EPISODE = gql`
     mutation createEpisode($episodeCreateInput : episodeCreateInput!) {
         createEpisode(episodeCreateInput: $episodeCreateInput) {
             ok

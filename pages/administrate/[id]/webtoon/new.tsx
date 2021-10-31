@@ -24,17 +24,21 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
 
     const onDrop = useCallback(async (acceptedFiles) => {
         try {
-            const formBody = new FormData();
-            const actualFile = acceptedFiles[0];
-            formBody.append('file', actualFile);
+            const images: string[] = await Promise.all(acceptedFiles.map(async (image: string) => {
+                const formBody = new FormData();
+                const actualFile = image;
+                formBody.append('file', actualFile);
 
-            const url = await (await fetch("http://localhost:5001/uploads/", {
-                method: "POST",
-                body: formBody
-            })).json();
+                const url = await (await fetch("http://localhost:5001/uploads/", {
+                    method: "POST",
+                    body: formBody
+                })).json();
 
-            setImages((prev: string[]) => [...prev, url.url]);
-            
+                return url.url;
+            }))
+
+            setImages((prev: string[]) => [...prev, ...images]);
+
         } catch(e) {
             return alert("이미지를 올릴 수 없습니다.");
         }
@@ -59,7 +63,7 @@ const NewWebToonAdmin: NextPage<INewWebToonAdmin> = () => {
                 <Header/>
                 <div className={`w-full ${isDragActive ? 'bg-amber-500' : 'bg-amber-300'} flex items-center h-28 border rounded-lg mt-5`}>
                     <div {...getRootProps()} className={'w-full h-full flex items-center justify-center'}>
-                        <input {...getInputProps()} className={'w-full h-full'}/>
+                        <input {...getInputProps()} className={'w-full h-full'} accept={'image/jpeg'}/>
                         {
                             isDragActive ?
                                 <p className={'text-xl'}>

@@ -24,6 +24,7 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
     const apolloClient = initializeApollo();
 
 
+
     const [images, setImages] = useState<string[]>([]);
     const [uploadLoading, setUploadLoading] = useState<boolean>(true);
 
@@ -131,10 +132,10 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
     return (
         <>
             <Head>
-                <title>웹툰 새로올리기 | 석카오페이지</title>
+                <title>{series?.name} 새로 올리기 | 석카오페이지</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
-            <div className={'mx-auto'} style={{'maxWidth': '950px '}}>
+            <div className={'mx-auto w-full box-border'} style={{'maxWidth': '950px '}}>
                 <Header/>
                 <div
                     className={`w-full ${isDragActive ? 'bg-amber-500' : 'bg-amber-300'} flex items-center h-28 border rounded-lg mt-5`}>
@@ -142,22 +143,26 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
                         <input {...getInputProps()} className={'w-full h-full'} accept={'image/jpeg'}/>
                         {
                             isDragActive ?
-                                <p className={'text-xl'}>
+                                <p className={'text-sm lg:text-xl'}>
                                     <FontAwesomeIcon icon={faFileImage} className={'mr-1.5'}/>
                                     파일이 감지 되었습니다
                                 </p> :
-                                <p className={'text-xl'}>
+                                <p className={'text-sm lg:text-xl'}>
                                     <FontAwesomeIcon icon={faFileImage} className={'mr-1.5'}/>
-                                    이미지 파일을 드래그 및 클릭해서 올려놔주세요
+                                    이미지 파일을 드래그 및 클릭해서 업로드 해주세요
                                 </p>
                         }
                     </div>
                 </div>
 
-                <span className={'text-xl my-3'}>
+                <span className={'text-xl my-3 px-3'}>
                     미리보기
                 </span>
-                {images.length === 0 && <div className={'flex flex-col'}><span>업로드한 이미지가 없습니다</span></div>}
+                {images.length === 0 &&
+                <div className={'flex flex-col px-3'}>
+                    <span>업로드한 이미지가 없습니다</span>
+                </div>
+                }
                 {
                     !uploadLoading ?
                         <div className=" flex justify-center flex-col items-center text-gray-600">
@@ -181,7 +186,11 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
                             }
                         </div>
                 }
-                <button className={'bg-lime-400 hover:bg-lime-500 py-2 w-full rounded-md my-3'} onClick={() => createEpisode()}>저장하기</button>
+                <div className={'w-11/12 lg:w-full flex items-center mx-auto'}>
+                    <button className={'bg-lime-400 hover:bg-lime-500 py-2 w-full rounded-md my-3'}
+                            onClick={() => createEpisode()}>저장하기</button>
+                </div>
+
 
             </div>
 

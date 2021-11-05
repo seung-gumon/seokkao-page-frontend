@@ -221,8 +221,7 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
                                               'lineHeight': '63px'
                                           }} id={'target'}/>
                                 <button className={"bg-yellow-300 hover:bg-yellow-400 py-3 my-3 w-full rounded mx-auto"}
-                                        onClick={() => captureToImage()}>이미지 저장하기
-                                </button>
+                                        onClick={() => captureToImage()}>이미지 저장하기</button>
                             </article>
                     }
 

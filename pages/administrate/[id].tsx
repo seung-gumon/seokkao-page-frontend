@@ -142,6 +142,8 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     });
 
 
+
+
     const [changeNovelProfileImage , {loading : changeNovelImageLoading}] = useMutation<updateNovelProfileImage, updateNovelProfileImageVariables>(UPDATE_NOVEL_PROFILE_IMAGE, {
         onCompleted: async data => {
             if (data.updateNovelProfileImage.ok) {
@@ -400,7 +402,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                         data?.seriesDashBoardData.series.episode.length !== 0 ?
                         data?.seriesDashBoardData.series.episode.map((episode, index) => {
                             return (
-                                <Link href={`/administrate/${id}/${episode.id}`} key={index}>
+                                <Link key={index} href={data?.seriesDashBoardData.series.category.mainCategory === 'Cartoon' ? `/administrate/${id}/webtoon/${episode.id}` : `/administrate/${id}/${episode.id}`}>
                                     <a>
                                         <div className={'pl-1.5 hover:bg-amber-100 py-1.5 text-xs text-gray-600 border-b'}>
                                             <span
@@ -427,8 +429,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
             </section>
 
             <section className={'p-4 mx-auto bg-white'} style={{'maxWidth': '950px'}}>
-                <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>대표
-                    커버 사진 변경</h3>
+                <h3 className={'text-xs text-gray-600 whitespace-nowrap overflow-hidden overflow-ellipsis text-lg md:text-md'}>대표 커버 사진 변경</h3>
                 <div className={'flex text-center mx-auto'}>
                     {
                         changeNovelImageLoading ?

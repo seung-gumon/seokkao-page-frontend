@@ -31,7 +31,7 @@ export const ADMIN_FIND_BY_ID_EPISODE = gql`
     }
 `
 
-const UPDATE_EPISODE = gql`
+export const UPDATE_EPISODE = gql`
     mutation updateEpisode($episodeInput : episodeUpdateInput!) {
         updateEpisode(episodeInput: $episodeInput) {
             ok

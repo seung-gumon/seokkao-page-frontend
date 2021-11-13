@@ -85,7 +85,6 @@ const MyWork : NextPage<IMyWork> = ({}) => {
             <div className={'mx-auto bg-white'} style={{'maxWidth': '950px '}}>
                 <Header/>
                 <div className={'p-3'}>
-
                     <h4 className={'text-md text-gray-700 my-3'}>{data?.mySeries.name}님께서 집필하신 작품 ✏️</h4>
                     {
 
@@ -120,7 +119,7 @@ const MyWork : NextPage<IMyWork> = ({}) => {
                             </span>
                                 <Link href={"/administrate/new"}>
                                     <a>
-                                        <button className={'bg-amber-300 ml-3 rounded px-1.5 text-white'}>
+                                        <button className={'bg-amber-300 md:ml-3 my-3 rounded px-1.5 text-white'}>
                                             새로운 작품 집필하기
                                         </button>
                                     </a>

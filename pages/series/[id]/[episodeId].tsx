@@ -1,6 +1,6 @@
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
 import Head from "next/head";
-import React, {useEffect, useState} from "react";
+import React, {HTMLAttributes, useEffect, useRef, useState} from "react";
 import {Header} from "../../../component/Header";
 import {initializeApollo, isLoggedInVar} from "../../../apolloClient";
 import {FetchResult, gql, useMutation, useQuery, useReactiveVar} from "@apollo/client";
@@ -16,6 +16,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/router";
 import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";
 import {PURCHASE_HISTORY} from "../[id]";
+import {image} from "@nidi/html2canvas/dist/types/css/types/image";
+import LazyLoad from "react-lazyload";
 
 interface IUserEpisode {
     seriesId : number
@@ -29,6 +31,9 @@ export const EPISODE_DATA = gql`
             episode
             contents
             series {
+                category {
+                    mainCategory
+                }
                 name
             }
         }
@@ -70,6 +75,8 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
     const [page , setPage] = useState<number>(1);
     const [totalPage , setTotalPage] = useState<number>(0);
+    const navRef = useRef<HTMLAttributes<HTMLDivElement>>(null);
+
     const apolloClient = initializeApollo();
 
     const onPage = (e: any) => {
@@ -172,6 +179,13 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
     }, [data])
 
 
+
+    const confirmRef = () => {
+        const a = navRef.current;
+        console.log(a);
+    }
+
+
     if (!isLoggedIn) {
         return (
             <PleaseLogin/>
@@ -199,7 +213,49 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
     }
 
 
+    if (data.getEpisodeBySeriesIdAndEpisodeId.series.category.mainCategory === 'Cartoon') {
+        return (
+            <>
+                <Head>
+                    <title>
+                        {
+                            !data ? "석카오 페이지" : `${data?.getEpisodeBySeriesIdAndEpisodeId?.series.name} ${data?.getEpisodeBySeriesIdAndEpisodeId?.episode}화 | 석카오페이지`
+                        }
+                    </title>
+                    <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+                </Head>
+                <div className={'w-full flex justify-center items-center'} onClick={confirmRef}>
+                    <section className={'mx-auto relative w-full'} style={{'maxWidth': '950px'}}>
+                        <Header/>
+                        <div className={'flex flex-col'}>
+                            {
+                                data.getEpisodeBySeriesIdAndEpisodeId.contents.map((imageSrc,index) => {
+                                    return (
+                                        <LazyLoad once={true} key={imageSrc} height={200} offset={[-100, 0]}>
+                                            <img src={imageSrc} alt={`${index + 1}컷`} className={'w-full'}/>
+                                        </LazyLoad>
+                                    )
+                                })
+                            }
+                        </div>
+                        <article className={'fixed bottom-0 bg-white w-full py-2'} style={{'maxWidth':'950px'}}>
+                            <div className='flex flex-col items-center justify-center py-1 text-gray-500'>
+                                <div ref={navRef} className={'flex items-center justify-evenly py-1.5 w-full'}>
+                                    <FontAwesomeIcon icon={faList} className={'mr-1 text-gray-600 text-md'} onClick={gotoSeriesList}/>
+                                    <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={prevEpisode}>&larr; 이전편</span>
+                                    <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={nextEpisode}>다음편 &rarr;</span>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+                </div>
 
+
+
+            </>
+
+        )
+    }
 
 
     return (

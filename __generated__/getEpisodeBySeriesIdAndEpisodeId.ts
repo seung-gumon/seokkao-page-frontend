@@ -3,14 +3,20 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { seriesEpisodeIdsInput } from "./globalTypes";
+import { seriesEpisodeIdsInput, MainCategoryRole } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: getEpisodeBySeriesIdAndEpisodeId
 // ====================================================
 
+export interface getEpisodeBySeriesIdAndEpisodeId_getEpisodeBySeriesIdAndEpisodeId_series_category {
+  __typename: "Category";
+  mainCategory: MainCategoryRole;
+}
+
 export interface getEpisodeBySeriesIdAndEpisodeId_getEpisodeBySeriesIdAndEpisodeId_series {
   __typename: "Series";
+  category: getEpisodeBySeriesIdAndEpisodeId_getEpisodeBySeriesIdAndEpisodeId_series_category;
   name: string;
 }
 

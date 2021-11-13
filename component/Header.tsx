@@ -49,7 +49,7 @@ export const Header: NextPage<IHeader> = () => {
 
     return (
         <header className={'bg-white w-full'}>
-            <div className={'w-full sticky flex justify-between px-3 items-center'}>
+            <div className={'w-full sticky flex justify-between px-3 items-center mx-auto'}  style={{'maxWidth':'950px'}}>
                 <Link href={"/"}>
                     <a className={'mt-3'}>
                         <Image src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>

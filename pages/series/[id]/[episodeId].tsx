@@ -13,7 +13,7 @@ import NotAccept from "../../../component/NotAccept";
 import HTMLFlipBook from 'react-pageflip';
 import {faList} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useRouter} from "next/router";
+import {NextRouter, useRouter} from "next/router";
 import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";
 import {PURCHASE_HISTORY} from "../[id]";
 import {image} from "@nidi/html2canvas/dist/types/css/types/image";
@@ -51,11 +51,12 @@ export const PREV_OR_NEXT_EPISODE = gql`
 
 
 
-
-const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
+const UserEpisode: NextPage<IUserEpisode> = () => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
-    const router = useRouter();
+    const router : any= useRouter();
+
+
 
     const {
         data,
@@ -65,8 +66,8 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         skip: !isLoggedIn,
         variables: {
             seriesEpisodeIdsInput: {
-                seriesId,
-                episodeId
+                seriesId : +router.query.id,
+                episodeId : +router.query.episodeId
             }
         }
     });
@@ -75,7 +76,9 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
     const [page , setPage] = useState<number>(1);
     const [totalPage , setTotalPage] = useState<number>(0);
-    const navRef = useRef<HTMLAttributes<HTMLDivElement>>(null);
+
+    const navRef = useRef<any>(null);
+
 
     const apolloClient = initializeApollo();
 
@@ -92,7 +95,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
 
     const gotoSeriesList = () => {
-        return router.push(`/series/${seriesId}`);
+        return router.push(`/series/${+router.query.id}`);
     }
 
     const changePageFetchResult = async (req: FetchResult<prevOrNextEpisode>) => {
@@ -106,21 +109,21 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
         const queryResult = await apolloClient.readQuery({
             query: PURCHASE_HISTORY,
             variables: {
-                seriesId
+                seriesId : +router.query.id
             }
         });
 
         apolloClient.writeQuery({
             query: PURCHASE_HISTORY,
             variables: {
-                seriesId
+                seriesId : +router.query.id
             },
             data: {
                 getPurchaseHistory: [...queryResult.getPurchaseHistory, Number(episodeId)]
             }
         })
 
-        return router.push(`/series/${seriesId}/${Number(episodeId)}`);
+        return router.push(`/series/${+router.query.id}/${Number(episodeId)}`);
     }
 
 
@@ -135,7 +138,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                 variables: {
                     prevOrNext: 'next',
                     prevOrNextEpisode: {
-                        seriesId: seriesId,
+                        seriesId: +router.query.id,
                         episode: nextEpisode
                     }
                 },
@@ -156,7 +159,7 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                 variables: {
                     prevOrNext: 'prev',
                     prevOrNextEpisode: {
-                        seriesId: seriesId,
+                        seriesId: +router.query.id,
                         episode: prevEpisode
                     }
                 },
@@ -181,8 +184,12 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
 
 
     const confirmRef = () => {
-        const a = navRef.current;
-        console.log(a);
+        const currentDiv = navRef.current;
+        if (currentDiv.style.display === 'none') {
+            return currentDiv.style.display = "block"
+        } else {
+            return currentDiv.style.display = "none"
+        }
     }
 
 
@@ -224,9 +231,9 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                     </title>
                     <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
                 </Head>
+                <Header/>
                 <div className={'w-full flex justify-center items-center'} onClick={confirmRef}>
                     <section className={'mx-auto relative w-full'} style={{'maxWidth': '950px'}}>
-                        <Header/>
                         <div className={'flex flex-col'}>
                             {
                                 data.getEpisodeBySeriesIdAndEpisodeId.contents.map((imageSrc,index) => {
@@ -238,18 +245,17 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
                                 })
                             }
                         </div>
-                        <article className={'fixed bottom-0 bg-white w-full py-2'} style={{'maxWidth':'950px'}}>
-                            <div className='flex flex-col items-center justify-center py-1 text-gray-500'>
-                                <div ref={navRef} className={'flex items-center justify-evenly py-1.5 w-full'}>
-                                    <FontAwesomeIcon icon={faList} className={'mr-1 text-gray-600 text-md'} onClick={gotoSeriesList}/>
-                                    <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={prevEpisode}>&larr; 이전편</span>
-                                    <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={nextEpisode}>다음편 &rarr;</span>
-                                </div>
-                            </div>
-                        </article>
                     </section>
                 </div>
-
+                <article ref={navRef}  className={'fixed bottom-0 bg-white w-full left-1/2'} style={{'maxWidth':'950px','transform':'translateX(-50%)'}}>
+                    <div className='flex flex-col items-center justify-center text-gray-500'>
+                        <div className={'flex items-center justify-evenly w-full py-3'}>
+                            <FontAwesomeIcon icon={faList} className={'mr-1 text-gray-600 text-md'} onClick={gotoSeriesList} />
+                            <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={prevEpisode}>&larr; 이전편</span>
+                            <span className={'px-3 py-1.5 text-sm md:text-base cursor-pointer'} onClick={nextEpisode}>다음편 &rarr;</span>
+                        </div>
+                    </div>
+                </article>
 
 
             </>
@@ -309,18 +315,4 @@ const UserEpisode: NextPage<IUserEpisode> = ({seriesId,episodeId}) => {
     )
 }
 
-export default UserEpisode
-
-
-
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IUserEpisode>> => {
-    const params = context.query;
-
-
-    return {
-        props : {
-            seriesId : Number(params.id),
-            episodeId : Number(params.episodeId),
-        }
-    }
-}
+export default UserEpisode;

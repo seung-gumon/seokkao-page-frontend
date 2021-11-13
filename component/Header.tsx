@@ -23,13 +23,11 @@ interface IForm {
 
 export const Header: NextPage<IHeader> = () => {
 
+    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
 
     const {register, handleSubmit, getValues, formState,} = useForm<IForm>({
         mode: 'onChange'
     })
-
-    const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
-
 
     const submit = () => {
         const {keyword} = getValues();

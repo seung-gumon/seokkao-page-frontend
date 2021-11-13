@@ -32,6 +32,17 @@ export interface CreateAccountInput {
   coin: number;
 }
 
+export interface CreateSeriesInput {
+  thumbnail: string;
+  name: string;
+  description: string;
+  serialization: string;
+  writerId: number;
+  category: number;
+  like?: number | null;
+  view?: number | null;
+}
+
 export interface LoginInput {
   email: string;
   password: string;

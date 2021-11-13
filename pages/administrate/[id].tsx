@@ -11,9 +11,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'
 import {getDashBoardData, getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {addComma, addUnit, uploadImage} from "../../public/constants";
+import {addComma, addUnit, uploadImage, uploadNovelProfileSizeCheck} from "../../public/constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser, faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons";
+import {faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import NotAccept from "../../component/NotAccept";
 import {updateNovelProfileImage, updateNovelProfileImageVariables} from "../../__generated__/updateNovelProfileImage";
@@ -224,7 +224,9 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 
 
     const uploadProfileImage = async (e : ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files
+        const file = e.target.files;
+        if (!file) return;
+        uploadNovelProfileSizeCheck(file);
         if (file) {
             const novelProfileImage : string = await uploadImage(file[0]);
             setUpdateThumbnail(() => novelProfileImage);

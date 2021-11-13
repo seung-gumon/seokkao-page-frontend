@@ -288,7 +288,7 @@ const UserEpisode: NextPage<IUserEpisode> = () => {
                         maxShadowOpacity={0.1}
                         mobileScrollSupport={true}
                         onFlip={onPage}
-                     >
+                    >
                         {
                             data?.getEpisodeBySeriesIdAndEpisodeId?.contents.map((content: string, index) => {
                                 const imgAlt = `${data?.getEpisodeBySeriesIdAndEpisodeId?.series.name} ${data?.getEpisodeBySeriesIdAndEpisodeId?.episode}화${index + 1}page`

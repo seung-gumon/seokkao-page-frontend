@@ -97,7 +97,7 @@ const MyWork: NextPage<IMyWork> = ({}) => {
                                                      className={'w-full h-auto'}/>
                                             </div>
                                             <div
-                                                className={'flex w-/7/12 py-1.5 pl-2 font-medium flex-col justify-center'}>
+                                                className={'flex w-7/12 py-1.5 pl-2 font-medium flex-col justify-center'}>
                                                 <h3 className={'text-sm text-gray-700 py-1'}>{series.name}</h3>
                                                 <h6 className={'text-xs text-gray-500 font-light'}>{series.description}</h6>
                                                 <p className={'flex items-center mt-1.5 text-xs text-gray-500 font-light'}>

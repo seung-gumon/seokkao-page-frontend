@@ -119,6 +119,11 @@ const AdministrateByNew: NextPage<IAdministrateByNew> = () => {
 
         const {workName , description} = getValues();
 
+
+        if (createSeriesState.categoryId === 999) {
+            return alert("카테고리를 지정해주세요 !")
+        }
+
         await createSeriesMutation({
             variables : {
                 input : {

@@ -40,7 +40,6 @@ export interface CreateSeriesInput {
   writerId: number;
   category: number;
   like?: number | null;
-  view?: number | null;
 }
 
 export interface LoginInput {

@@ -54,19 +54,19 @@ export const Header: NextPage<IHeader> = () => {
                     </a>
                 </Link>
                 <div className="p-4 pb-3 pr-0 flex justify-center items-center">
-                    <form onSubmit={handleSubmit(submit)}>
-                        <div className="bg-white flex items-center rounded-full border border-gray-200">
-                            <input {...register('keyword')}
-                                   className="rounded-l-full w-full px-3 text-gray-700 leading-tight focus:outline-none text-xs"
-                                   type={'text'} placeholder={'작품명을 검색하세요'}/>
-                            <div className="p-1">
-                                <button
-                                    className="bg-amber-300 text-white rounded-full p-3 hover:bg-amber-500 focus:outline-none w-6 h-6 flex items-center justify-center">
-                                    <FontAwesomeIcon icon={faSearch} className={'far text-grey-800 text-sm'}/>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    {/*<form onSubmit={handleSubmit(submit)}>*/}
+                    {/*    <div className="bg-white flex items-center rounded-full border border-gray-200">*/}
+                    {/*        <input {...register('keyword')}*/}
+                    {/*               className="rounded-l-full w-full px-3 text-gray-700 leading-tight focus:outline-none text-xs"*/}
+                    {/*               type={'text'} placeholder={'작품명을 검색하세요'}/>*/}
+                    {/*        <div className="p-1">*/}
+                    {/*            <button*/}
+                    {/*                className="bg-amber-300 text-white rounded-full p-3 hover:bg-amber-500 focus:outline-none w-6 h-6 flex items-center justify-center">*/}
+                    {/*                <FontAwesomeIcon icon={faSearch} className={'far text-grey-800 text-sm'}/>*/}
+                    {/*            </button>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</form>*/}
 
                     <div className={'ml-2'} onClick={() => onClickWay()}>
                         <FontAwesomeIcon icon={faUser} className={'red-300 text-3xl hover:text-amber-500'}/>

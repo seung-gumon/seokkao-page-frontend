@@ -15,7 +15,7 @@ import {findByIdSeries, findByIdSeriesVariables} from "../../../__generated__/fi
 import {createEpisode, createEpisodeVariables} from "../../../__generated__/createEpisode";
 import moment from "moment";
 import {GET_DASHBOARD_DATA} from "../[id]";
-
+import {useRouter} from "next/router";
 
 export const CREATE_EPISODE = gql`
     mutation createEpisode($episodeCreateInput : episodeCreateInput!) {
@@ -31,7 +31,7 @@ export const CREATE_EPISODE = gql`
 const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
-
+    const router = useRouter();
 
     const [createMutation] = useMutation<createEpisode, createEpisodeVariables>(CREATE_EPISODE, {
         refetchQueries: [{
@@ -46,7 +46,8 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
         }],
         onCompleted: data => {
             if (data.createEpisode.ok) {
-                return alert("새로운 에피소드가 등록되었습니다.")
+                alert("새로운 에피소드가 등록되었습니다.");
+                return router.push(`/administrate/${seriesId}`);
             } else {
                 return alert('새로운 에피소드 등록 실패하였습니다.새로고침후 다시 시도 해주세요')
             }
@@ -255,7 +256,7 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
                     <button className={'w-3/6 bg-blue-300 py-2 rounded hover:bg-blue-500'}
                             onClick={() => sortImage()}>이미지 재배열 하기
                     </button>
-                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'} onClick={() => createEpisode()}>생성하기</button>
+                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'} onClick={createEpisode}>생성하기</button>
                 </section>
             </section>
 

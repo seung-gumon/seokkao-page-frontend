@@ -49,7 +49,7 @@ const ContentsContainer: NextPage<IContentsContainer> =
             return (
                 <div className="grid grid-flow-row grid-cols-5 grid-rows-5 gap-5 gap-y-2 w-full bg-white px-2 md:pt-3">
                     {
-                        [...Array(25)].map((n, index) => {
+                        [...Array(15)].map((n, index) => {
                             return (
                                 <div className={'flex flex-col'} key={index}>
                                     <SkeletonTheme color="#CBD5E1" highlightColor="#94A3B8">
@@ -100,10 +100,10 @@ const ContentsContainer: NextPage<IContentsContainer> =
                 </div>
 
 
-                <div className={'flex bg-white w-full items-center justify-center py-3'}>
-                    <span
-                        className={'text-black text-xs md:text-sm cursor-pointer text-center md:text-lg border-2 border-blueGray-300 px-2 py-1 rounded-lg text-blueGray-500'}>{today} 연재 더보기 &rarr;</span>
-                </div>
+                {/*<div className={'flex bg-white w-full items-center justify-center py-3'}>*/}
+                {/*    <span*/}
+                {/*        className={'text-black text-xs md:text-sm cursor-pointer text-center md:text-lg border-2 border-blueGray-300 px-2 py-1 rounded-lg text-blueGray-500'}>{today} 연재 더보기 &rarr;</span>*/}
+                {/*</div>*/}
             </>
         )
 

@@ -80,7 +80,7 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
                 <Slick
                     mainBanner={mainPageData.mainBanner}
                 />
-                <MiddleCategory/>
+                {/*<MiddleCategory/>*/}
                 <OrderContainer
                     today={today}
                     setToday={setToday}
@@ -91,15 +91,15 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
                     today={today}
                     genre={genre}
                 />
-                <AdBanner/>
-                <CommonListContentsBox
-                    title={'인기 웹툰'}
-                    fetchData={mainPageData.orderByPopular.cartoon}
-                />
-                <CommonListContentsBox
-                    title={'인기 소설'}
-                    fetchData={mainPageData.orderByPopular.novel}
-                />
+                {/*<AdBanner/>*/}
+                {/*<CommonListContentsBox*/}
+                {/*    title={'인기 웹툰'}*/}
+                {/*    fetchData={mainPageData.orderByPopular.cartoon}*/}
+                {/*/>*/}
+                {/*<CommonListContentsBox*/}
+                {/*    title={'인기 소설'}*/}
+                {/*    fetchData={mainPageData.orderByPopular.novel}*/}
+                {/*/>*/}
             </div>
         </>
     )

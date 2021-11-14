@@ -171,17 +171,9 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
     }
 
 
-    useEffect(() => {
-        if (series) {
-            setEpisodes(series.episode)
-        }
-    }, [])
 
 
-    const [episodes, setEpisodes] = useState<findByIdSeries_findByIdSeries_episode[]>([]);
-
-
-    if (episodes.length === 0 || !series) {
+    if (!series) {
         return (
             <NotAccept/>
         )
@@ -245,9 +237,7 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
                             <button className={'bg-yellow-300 w-full '}>첫편보기</button>
                         </a>
                     </Link>
-
                 </article>
-
             </section>
 
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>

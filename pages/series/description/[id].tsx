@@ -46,19 +46,19 @@ const Description: NextPage<IDescription> = ({data}) => {
                         <p className={'text-gray-500 ml-2 text-sm line-clamp-5'}>{data?.findByIdSeries?.description}</p>
                         <ul className={'flex flex-col mt-8 ml-2 w-full text-sm text-gray-500'}>
                             <li className={'w-full flex mt-1'}>
-                                <span className={'font-bold'} style={{'minWidth': '32%'}}>카테고리</span>
+                                <span className={'font-bold w-20'}>카테고리</span>
                                 <span>{data?.findByIdSeries?.category?.categoryName}</span>
                             </li>
                             <li className={'w-full flex mt-1'}>
-                                <span className={'font-bold'} style={{'minWidth': '32%'}}>발행자</span>
+                                <span className={'font-bold w-20'}>발행자</span>
                                 <span>석카오 페이지</span>
                             </li>
                             <li className={'w-full flex mt-1'}>
-                                <span className={'font-bold'} style={{'minWidth': '32%'}}>연령등급</span>
+                                <span className={'font-bold w-20'}>연령등급</span>
                                 <span>전체 이용가</span>
                             </li>
                             <li className={'w-full flex mt-1'}>
-                                <span className={'font-bold'} style={{'minWidth': '32%'}}>전자책 정가</span>
+                                <span className={'font-bold w-20'}>전자책 정가</span>
                                 <span>{data?.findByIdSeries?.category?.mainCategory === 'Novel' ?
                                     "1코인/회차 당"
                                     :
@@ -66,7 +66,7 @@ const Description: NextPage<IDescription> = ({data}) => {
                                 }</span>
                             </li>
                             <li className={'w-full flex mt-1'}>
-                                <span className={'font-bold'} style={{'minWidth': '32%'}}>작가</span>
+                                <span className={'font-bold w-20'}>작가</span>
                                 <span>{data?.findByIdSeries?.writer.name}</span>
                             </li>
                         </ul>

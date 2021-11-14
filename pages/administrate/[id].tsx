@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'
 import {getDashBoardData, getDashBoardDataVariables} from "../../__generated__/getDashBoardData";
 import {GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage} from "next";
-import {addComma, addUnit, uploadImage, uploadNovelProfileSizeCheck} from "../../public/constants";
+import {addComma, uploadImage, uploadNovelProfileSizeCheck} from "../../public/constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook, faHeart, faEye} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";

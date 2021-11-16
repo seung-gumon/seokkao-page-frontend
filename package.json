@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "npm run apollo:codegen && npm run tailwind:build && next dev",
+    "tailwind:prodbuild" : "NODE_ENV=production npm run tailwind:build",
     "tailwind:build": "NODE_ENV=production tailwind build styles/globals.css -o styles/styles.css",
     "apollo:codegen": "rimraf __generated__ && NODE_ENV=production apollo client:codegen __generated__ --target=typescript --outputFlat",
-    "build": "next build",
+    "build": "next build && next export",
+    "prebuild" : "npm run tailwind:prodbuild",
     "start": "npm run apollo:codegen & npm run tailwind:build & next start",
     "lint": "next lint"
   },

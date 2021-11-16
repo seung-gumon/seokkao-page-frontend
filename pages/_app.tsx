@@ -3,14 +3,16 @@ import {useApollo} from '../apolloClient';
 import {NextPage} from "next";
 import '../styles/globals.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-import {config} from '@fortawesome/fontawesome-svg-core';
+// import {config} from '@fortawesome/fontawesome-svg-core';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from 'next/router';
 import Head from 'next/head';
 import {useEffect} from "react";
+import Amplify from "aws-amplify";
+import config from '../src/aws-exports';
+Amplify.configure(config)
 
-
-config.autoAddCss = false
+// config.autoAddCss = false
 
 const App: NextPage<any> = ({Component, pageProps}) => {
 

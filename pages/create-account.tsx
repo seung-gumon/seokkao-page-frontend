@@ -2,7 +2,6 @@ import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
 import {EMAIL_PATTERN, PHONE_PATTERN} from "../public/constants";
 import { ErrorMessage } from "@hookform/error-message";
 import { ILoginForm } from "./login";
@@ -91,7 +90,7 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
       </Head>
       <Link href={"/"}>
         <a>
-          <Image
+          <img
             className={"cursor-pointer"}
             src={"/logo-kakaopage.svg"}
             alt={"kakaoPage"}

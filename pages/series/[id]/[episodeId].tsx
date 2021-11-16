@@ -16,7 +16,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {NextRouter, useRouter} from "next/router";
 import {prevOrNextEpisode, prevOrNextEpisodeVariables} from "../../../__generated__/prevOrNextEpisode";
 import {PURCHASE_HISTORY} from "../[id]";
-import {image} from "@nidi/html2canvas/dist/types/css/types/image";
 import LazyLoad from "react-lazyload";
 
 interface IUserEpisode {

@@ -471,16 +471,26 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 export default AdministrateById
 
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IAdministrate>> => {
+const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IAdministrate>> => {
 
-    const apolloClient = initializeApollo();
+    try {
+        const apolloClient = initializeApollo();
 
-    const {id}: any = context.query;
+        const {id}: any = context.query;
 
 
-    return {
-        props: {
-            id: +id
-        },
+        return {
+            props: {
+                id: +id
+            },
+        }
+    } catch {
+        return {
+            props : {
+                id : 0
+            }
+        }
     }
+
+
 }

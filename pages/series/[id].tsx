@@ -287,27 +287,39 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
 export default Series;
 
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
-    const apolloClient = initializeApollo();
+const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
 
-    const {id}: any = context.query;
+    try{
+        const apolloClient = initializeApollo();
+
+        const {id}: any = context.query;
 
 
-    const {data, error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
-        query: FIND_BY_ID_SERIES,
-        variables: {
-            seriesId: +id
+        const {data, error} = await apolloClient.query<findByIdSeries, findByIdSeriesVariables>({
+            query: FIND_BY_ID_SERIES,
+            variables: {
+                seriesId: +id
+            }
+        });
+
+
+        return {
+            props: {
+                series: data.findByIdSeries,
+                episodeLength: data?.findByIdSeries?.episode?.length ?? 0,
+                seriesId: +id,
+            },
         }
-    });
-
-
-    return {
-        props: {
-            series: data.findByIdSeries,
-            episodeLength: data?.findByIdSeries?.episode?.length ?? 0,
-            seriesId: +id,
-        },
+    }catch (e) {
+        return {
+            props: {
+                series: null,
+                episodeLength: 0,
+                seriesId: 0,
+            },
+        }
     }
+
 }
 
 

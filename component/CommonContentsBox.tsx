@@ -1,6 +1,5 @@
 import {NextPage} from "next";
 import Link from "next/link";
-import Image from "next/image";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
 import React from "react";

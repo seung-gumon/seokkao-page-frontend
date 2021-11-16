@@ -1,5 +1,4 @@
 import {NextPage} from "next";
-import Image from 'next/image'
 import {useForm} from "react-hook-form";
 import {
     faSearch,
@@ -50,7 +49,7 @@ export const Header: NextPage<IHeader> = () => {
             <div className={'w-full sticky flex justify-between px-3 items-center mx-auto'}  style={{'maxWidth':'950px'}}>
                 <Link href={"/"}>
                     <a className={'mt-3'}>
-                        <Image src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>
+                        <img src={"/logo-kakaopage.svg"} alt={'kakaopage'} width={'130px'} height={'29px'}/>
                     </a>
                 </Link>
                 <div className="p-4 pb-3 pr-0 flex justify-center items-center">

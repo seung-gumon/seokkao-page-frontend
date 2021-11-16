@@ -80,7 +80,7 @@ const Description: NextPage<IDescription> = ({data}) => {
 export default Description;
 
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IDescription>> => {
+const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IDescription>> => {
     try{
         const apolloClient = initializeApollo();
 

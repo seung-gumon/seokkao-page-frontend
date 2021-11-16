@@ -1,5 +1,4 @@
 import {NextPage} from "next";
-import Image from "next/image";
 import {useForm} from "react-hook-form";
 import Link from 'next/link';
 import {EMAIL_PATTERN} from "../public/constants";
@@ -84,7 +83,7 @@ const Login: NextPage<ILogin> = () => {
             </Head>
             <Link href={'/'}>
                 <a>
-                    <Image className={'cursor-pointer'} src={"/logo-kakaopage.svg"} alt={'kakaoPage'} width={'130px'}
+                    <img className={'cursor-pointer'} src={"/logo-kakaopage.svg"} alt={'kakaoPage'} width={'130px'}
                            height={'29px'}/>
                 </a>
             </Link>

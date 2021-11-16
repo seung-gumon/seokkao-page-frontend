@@ -67,6 +67,12 @@ export const PURCHASE_HISTORY = gql`
 const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
 
 
+
+
+    useEffect(() => {
+        console.log(seriesId , 'in useEffect Series Id')
+    },[seriesId])
+
     const router = useRouter();
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
     const apolloClient = initializeApollo();

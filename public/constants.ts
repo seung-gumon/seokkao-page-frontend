@@ -26,7 +26,7 @@ export const uploadImage = async (file: File) => {
     const formBody = new FormData();
     formBody.append('file', file);
 
-    const url = await (await fetch("http://localhost:5001/uploads/", {
+    const url = await (await fetch("https://seokkao-page-backend.herokuapp.com/uploads/", {
         method: "POST",
         body: formBody
     })).json();

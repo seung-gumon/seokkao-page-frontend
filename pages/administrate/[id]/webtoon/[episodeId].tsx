@@ -86,7 +86,7 @@ const WebToonEpisode = () => {
         }
 
         const replaceImgSrc = imageSrc.replace('https://seungseokkakaopage.s3.amazonaws.com/', "");
-        const res = await fetch("http://localhost:5001/uploads/delete", {
+        const res = await fetch("https://seokkao-page-backend.herokuapp.com/uploads/delete", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -120,7 +120,7 @@ const WebToonEpisode = () => {
                 const actualFile = image;
                 formBody.append('file', actualFile);
 
-                const url = await (await fetch("http://localhost:5001/uploads/", {
+                const url = await (await fetch("https://seokkao-page-backend.herokuapp.com/uploads/", {
                     method: "POST",
                     body: formBody
                 })).json();

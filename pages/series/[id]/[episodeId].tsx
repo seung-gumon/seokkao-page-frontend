@@ -264,6 +264,7 @@ const UserEpisode: NextPage<IUserEpisode> = () => {
     }
 
 
+
     return (
         <>
             <Head>
@@ -277,6 +278,7 @@ const UserEpisode: NextPage<IUserEpisode> = () => {
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>
                 <Header/>
                 <section className={'mx-auto w-full bg-white'}>
+                    {/*// @ts-ignore*/}
                     <HTMLFlipBook
                         width={720}
                         height={1097}

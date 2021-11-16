@@ -28,7 +28,7 @@ export const authTokenVar = makeVar(token);
 
 
 const httpLink = createHttpLink({
-    uri: "http://localhost:5001/graphql"
+    uri: process.env.NODE_ENV === 'production' ? 'https://seokkao-page-backend.herokuapp.com/graphql' : "http://localhost:5001/graphql"
 });
 
 const authLink = setContext((_, {headers}) => {

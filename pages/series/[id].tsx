@@ -68,11 +68,6 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
 
 
 
-
-    useEffect(() => {
-        console.log(seriesId , 'in useEffect Series Id')
-    },[seriesId])
-
     const router = useRouter();
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
     const apolloClient = initializeApollo();
@@ -293,8 +288,7 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
 export default Series;
 
 
-const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
-
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
     try{
         const apolloClient = initializeApollo();
 
@@ -307,6 +301,7 @@ const getServerSideProps: GetServerSideProps = async (context: GetServerSideProp
                 seriesId: +id
             }
         });
+
 
 
         return {

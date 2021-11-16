@@ -471,7 +471,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
 export default AdministrateById
 
 
-const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IAdministrate>> => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IAdministrate>> => {
 
     try {
         const apolloClient = initializeApollo();

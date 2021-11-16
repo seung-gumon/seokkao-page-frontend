@@ -202,7 +202,7 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
 export default NewWebToonAdmin
 
 
-const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
     try{
         const apolloClient = initializeApollo();
 

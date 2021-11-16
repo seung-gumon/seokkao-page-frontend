@@ -267,7 +267,7 @@ const NewEpisodeAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
 
 export default NewEpisodeAdmin
 
-const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<ISeries>> => {
 
     try{
         const apolloClient = initializeApollo();

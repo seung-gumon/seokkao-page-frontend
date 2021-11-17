@@ -26,7 +26,7 @@ import moment from "moment";
 
 interface IIndex {
     mainPageData: mainPage
-    current : Date
+    current : string
 }
 
 
@@ -129,7 +129,7 @@ export const getStaticProps: GetStaticProps = async (context: GetStaticPropsCont
     return {
         props: {
             mainPageData: data,
-            current : current
+            current : String(current)
         },
         revalidate: 40000
     }

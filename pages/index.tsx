@@ -91,6 +91,7 @@ const Index: NextPage<IIndex> = ({mainPageData}) => {
                 <ContentsContainer
                     today={today}
                     genre={genre}
+
                 />
                 {/*<AdBanner/>*/}
                 {/*<CommonListContentsBox*/}

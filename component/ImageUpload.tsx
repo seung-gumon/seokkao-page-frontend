@@ -54,10 +54,6 @@ const ImageUpload: NextPage<IImageUpload> =
         }
 
 
-        useEffect(() => {
-            console.log(uploadLoading , "upload Loading")
-        },[uploadLoading])
-
         if (uploadLoading) {
             return (
                 <div className=" flex justify-center flex-col items-center text-gray-600">

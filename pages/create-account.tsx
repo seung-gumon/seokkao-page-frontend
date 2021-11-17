@@ -126,14 +126,14 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
             />
             <input
               {...register("phoneNumber", {
-                required: "전화번호를 기입해주세요",
+                required: "전화번호를호 기입해주세요",
                 pattern : {
                   value:PHONE_PATTERN,
                   message : "패턴에 맞게 기입해주세요"
                 }
               })}
               className="bg-transparent border-b m-auto block border-gray-500 w-full mb-2 text-gray-500 py-2 px-1 focus:outline-none text-sm"
-              type="tel"
+              type="number"
               name={"phoneNumber"}
               placeholder="전화번호를 기입해주세요 (ex:010-1234-5678)"
             />

@@ -33,21 +33,13 @@ export const uploadImage = async (file: File) => {
     return url.url;
 }
 
-export const uploadNovelProfileSizeCheck = (files: FileList) => {
+export const uploadNovelProfileSizeCheck = async (files: FileList) => {
     const preview = Array.from(files).map((file: any) =>
         Object.assign(file, {
             preview: URL.createObjectURL(file)
         })
     )
-    preview.forEach((item: any) => {
-        const img = new Image();
-        img.onload = () => {
-            if (img.naturalWidth === 320 && img.naturalHeight === 320) {
-                return true;
-            } else {
-                return alert("이미지 가로 320 * 세로 320만 업로드 가능합니다.");
-            }
-        };
-        img.src = item.preview;
-    });
+
+    const base64ImgURL = preview[0];
+    return base64ImgURL;
 }

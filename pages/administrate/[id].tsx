@@ -223,19 +223,39 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
     })
 
 
-    const uploadProfileImage = async (e : ChangeEvent<HTMLInputElement>) => {
+    const uploadProfileImage = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files;
         if (!file) return;
-        uploadNovelProfileSizeCheck(file);
+
+        const base64ImgUrl = await uploadNovelProfileSizeCheck(file);
+        const img = new Image();
+
+
         if (file) {
-            const novelProfileImage : string = await uploadImage(file[0]);
-            setUpdateThumbnail(() => novelProfileImage);
-            await changeNovelProfileImage({
-                variables : {
-                    novelProfileImage,
-                    seriesId : id
+            img.onload = async () => {
+                if (img.naturalWidth === 320 && img.naturalHeight === 320) {
+                    try {
+                        const novelProfileImage = await uploadImage(file[0]);
+                        setUpdateThumbnail(() => novelProfileImage);
+                        await changeNovelProfileImage({
+                            variables: {
+                                novelProfileImage,
+                                seriesId: id
+                            }
+                        })
+                        return setUpdateThumbnail(novelProfileImage);
+                    } catch (e) {
+                        return alert("이미지를 업로드 할 수 없습니다.")
+                    }
+                } else {
+                    return alert("가로 세로 320px 이미지만 업로드 가능합니다.");
                 }
-            })
+            }
+            if (base64ImgUrl) {
+                img.src = base64ImgUrl.preview;
+            } else {
+                return
+            }
         }
     }
 
@@ -455,7 +475,7 @@ const AdministrateById: NextPage<IAdministrate> = ({id}) => {
                                                 <span className="block text-xs text-gray-600 font-normal font-bold">클릭 해서 이미지 업로드<br/>사이즈 : 320*320</span>
                                             </div>
                                         </div>
-                                        <input type="file" className="h-full w-full opacity-0" onChange={(e) => uploadProfileImage(e)}/>
+                                        <input type="file" className="h-full w-full opacity-0" multiple={false} onChange={(e) => uploadProfileImage(e)}/>
                                     </div>
                                 </div>
                             </div>

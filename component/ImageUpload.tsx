@@ -1,5 +1,5 @@
 import {NextPage} from "next";
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {uploadImage, uploadNovelProfileSizeCheck} from "../public/constants";
 
 
@@ -27,16 +27,36 @@ const ImageUpload: NextPage<IImageUpload> =
             setUploadLoading(() => true);
             const file = e.target.files;
             if (!file) return;
-            uploadNovelProfileSizeCheck(file);
-            try {
-                const novelProfileImage: Promise<string> = await uploadImage(file[0]);
-                setUploadLoading(() => false);
-                return setState(novelProfileImage);
-            } catch (e) {
-                return alert("이미지를 업로드 할 수 없습니다.")
+
+            const base64ImgUrl = await uploadNovelProfileSizeCheck(file);
+            const img = new Image();
+
+            img.onload = async () => {
+                if (img.naturalWidth === 320 && img.naturalHeight === 320) {
+                    try {
+                        const novelProfileImage: Promise<string> = await uploadImage(file[0]);
+                        setUploadLoading(() => false);
+                        return setState(novelProfileImage);
+                    } catch (e) {
+                        setUploadLoading(() => false);
+                        return alert("이미지를 업로드 할 수 없습니다.")
+                    }
+                } else {
+                    setUploadLoading(() => false);
+                    return alert("가로 세로 320px 이미지만 업로드 가능합니다.");
+                }
+            }
+            if (base64ImgUrl) {
+                img.src = base64ImgUrl.preview;
+            } else {
+                return;
             }
         }
 
+
+        useEffect(() => {
+            console.log(uploadLoading , "upload Loading")
+        },[uploadLoading])
 
         if (uploadLoading) {
             return (

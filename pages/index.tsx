@@ -7,7 +7,7 @@ import {
 import {Header} from "../component/Header";
 import SubHeader from "../component/SubHeader";
 import Head from "next/head";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Slick from "../component/Slick";
 import 'moment/locale/ko';
 import {initializeApollo} from "../apolloClient";
@@ -54,7 +54,11 @@ export const MAIN_PAGE_QUERY = gql`
 `
 
 
-const Index: NextPage<IIndex> = ({mainPageData}) => {
+const Index: NextPage<IIndex> = ({mainPageData , current}) => {
+
+    useEffect(() => {
+        console.log(current , "Current Test")
+    },[current])
 
 
     useQuery<meQuery>(ME_QUERY, {

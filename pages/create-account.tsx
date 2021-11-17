@@ -133,7 +133,7 @@ const CreateAccount: NextPage<ICreateAccount> = () => {
                 }
               })}
               className="bg-transparent border-b m-auto block border-gray-500 w-full mb-2 text-gray-500 py-2 px-1 focus:outline-none text-sm"
-              type="number"
+              type="string"
               name={"phoneNumber"}
               placeholder="전화번호를 기입해주세요 (ex:010-1234-5678)"
             />

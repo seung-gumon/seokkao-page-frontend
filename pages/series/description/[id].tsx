@@ -7,6 +7,7 @@ import {workDescription, workDescriptionVariables} from "../../../__generated__/
 import Head from "next/head";
 import React from "react";
 import {Header} from "../../../component/Header";
+import {NextSeo} from "next-seo";
 
 export const FIND_BY_ID_SERIES = gql`
     query workDescription($seriesId : Float!) {
@@ -32,10 +33,17 @@ interface IDescription {
 const Description: NextPage<IDescription> = ({data}) => {
     return (
         <>
-            <Head>
-                <title>작품 설명 | 석카오페이지</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-            </Head>
+            <NextSeo
+                title={`${data?.findByIdSeries?.name} | 석카오페이지`}
+                description={data?.findByIdSeries?.description}
+                canonical={`https://seokkao-page-frontend.vercel.app/series/description/${data?.findByIdSeries?.id}`}
+                openGraph={{
+                    url: `https://seokkao-page-frontend.vercel.app/series/description/${data?.findByIdSeries?.id}`,
+                    title: `${data?.findByIdSeries?.name} | 석카오 페이지`,
+                    description: `${data?.findByIdSeries?.description}`,
+                    site_name: 'Seokkao-Page',
+                }}
+            />
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>
                 <Header/>
             </section>

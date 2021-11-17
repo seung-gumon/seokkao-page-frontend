@@ -19,6 +19,7 @@ import NotAccept from "../../component/NotAccept";
 import {buyEpisode, buyEpisodeVariables} from "../../__generated__/buyEpisode";
 import {useRouter} from "next/router";
 import {getPurchaseHistory, getPurchaseHistoryVariables} from "../../__generated__/getPurchaseHistory";
+import {NextSeo} from "next-seo";
 
 
 export interface ISeries {
@@ -183,10 +184,17 @@ const Series: NextPage<ISeries> = ({series, episodeLength, seriesId}) => {
 
     return (
         <>
-            <Head>
-                <title>{series.name} | 석카오페이지</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-            </Head>
+            <NextSeo
+                title={`${series.name} | 석카오페이지`}
+                description={series.description}
+                canonical={`https://seokkao-page-frontend.vercel.app/series/${series.id}`}
+                openGraph={{
+                    url: `https://seokkao-page-frontend.vercel.app/series/${series.id}`,
+                    title: `${series.name} | 석카오 페이지`,
+                    description: `${series.description}`,
+                    site_name: 'Seokkao-Page',
+                }}
+            />
             <section className={'mx-auto w-full'} style={{'maxWidth': '950px'}}>
                 <Header/>
             </section>

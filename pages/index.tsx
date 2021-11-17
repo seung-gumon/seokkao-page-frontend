@@ -11,18 +11,15 @@ import React, {useEffect, useState} from "react";
 import Slick from "../component/Slick";
 import 'moment/locale/ko';
 import {initializeApollo} from "../apolloClient";
-import MiddleCategory from "../component/MiddleCategory";
 import OrderContainer from "../component/OrderContainer";
 import ContentsContainer from "../component/ContentsContainer";
-import AdBanner from "../component/AdBanner";
-import CommonListContentsBox from "../component/CommonListContentsBox";
 import {gql, useQuery} from "@apollo/client";
 import {meQuery} from "../__generated__/meQuery";
 import {ME_QUERY} from "./me";
 import {SERIES_FRAGMENT} from "../fragments";
 import {mainPage, mainPageVariables} from "../__generated__/mainPage";
 import moment from "moment";
-
+import { NextSeo } from 'next-seo';
 
 interface IIndex {
     mainPageData: mainPage
@@ -56,9 +53,6 @@ export const MAIN_PAGE_QUERY = gql`
 
 const Index: NextPage<IIndex> = ({mainPageData , current}) => {
 
-    useEffect(() => {
-        console.log(current , "Current Test")
-    },[current])
 
 
     useQuery<meQuery>(ME_QUERY, {
@@ -75,10 +69,17 @@ const Index: NextPage<IIndex> = ({mainPageData , current}) => {
 
     return (
         <>
-            <Head>
-                <title>홈 | 석카오페이지</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-            </Head>
+            <NextSeo
+                title="홈 | 석카오페이지"
+                description="승구몬이 카카오페이지를 즐겨봐서 만든 나름 클론코딩!"
+                canonical="https://seokkao-page-frontend.vercel.app/"
+                openGraph={{
+                    url: 'https://seokkao-page-frontend.vercel.app/',
+                    title: '석카오 페이지',
+                    description: '승구몬이만든 석카오페이지!',
+                    site_name: 'Seokkao-Page',
+                }}
+            />
             <div className={'mx-auto'} style={{'maxWidth': '950px'}}>
                 <Header/>
                 <SubHeader/>

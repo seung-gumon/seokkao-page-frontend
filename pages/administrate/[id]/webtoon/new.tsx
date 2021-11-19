@@ -15,10 +15,14 @@ import moment from "moment";
 import {CREATE_EPISODE} from "../new";
 import {FIND_BY_ID_SERIES, ISeries} from "../../../series/[id]";
 import {findByIdSeries, findByIdSeriesVariables} from "../../../../__generated__/findByIdSeries";
+import {useRouter} from "next/router";
 
 
 
 const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) => {
+
+
+    const router = useRouter();
 
     const isLoggedIn: boolean = useReactiveVar(isLoggedInVar);
     const apolloClient = initializeApollo();
@@ -41,7 +45,8 @@ const NewWebToonAdmin : NextPage<ISeries> = ({series,episodeLength,seriesId}) =>
         }],
         onCompleted: data => {
             if (data.createEpisode.ok) {
-                return alert("새로운 에피소드가 등록되었습니다.")
+                alert("새로운 에피소드가 등록되었습니다.");
+                return router.push(`/administrate/${seriesId}`);
             } else {
                 return alert('새로운 에피소드 등록 실패하였습니다.새로고침후 다시 시도 해주세요')
             }

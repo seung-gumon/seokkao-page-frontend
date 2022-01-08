@@ -9,6 +9,13 @@ import {useRouter} from "next/router";
 import {adminFindByIdEpisode, adminFindByIdEpisodeVariables} from "../../../__generated__/adminFindByIdEpisode";
 import html2canvas from "@nidi/html2canvas";
 import {updateEpisode, updateEpisodeVariables} from "../../../__generated__/updateEpisode";
+import {
+    DragDropContext,
+    Droppable,
+    Draggable,
+    DropResult,
+} from "react-beautiful-dnd";
+import DragabbleCard from "../../../component/DragabbleCard";
 
 
 export interface IImages {
@@ -59,7 +66,7 @@ const EpisodeAdmin = () => {
                 return {
                     id: index,
                     src: contents,
-                    seq: index+1
+                    seq: index + 1
                 }
             })
             setImageList(contents);
@@ -87,9 +94,9 @@ const EpisodeAdmin = () => {
     const update = async () => {
         const contents = imageList?.map(image => image.src);
         await updateEpisode({
-            variables : {
-                episodeInput : {
-                    id : data?.adminFindByIdEpisode?.id,
+            variables: {
+                episodeInput: {
+                    id: data?.adminFindByIdEpisode?.id,
                     contents
                 }
             }
@@ -209,6 +216,17 @@ const EpisodeAdmin = () => {
     }
 
 
+    const onDragEnd = ({draggableId, destination, source}: DropResult) => {
+        if (!destination) return;
+        // setToDos((oldToDos) => {
+        //     const toDosCopy = [...oldToDos];
+        //     toDosCopy.splice(source.index, 1);
+        //     toDosCopy.splice(destination?.index, 0, draggableId);
+        //     return toDosCopy;
+        // });
+    };
+
+
     if (!isLoggedIn) {
         return (
             <PleaseLogin/>
@@ -272,36 +290,36 @@ const EpisodeAdmin = () => {
                     }
 
 
-                    <article className={'flex w-full flex-wrap items-center py-4'}>
-                        {
-                            imageList?.map((image, index) => {
-                                return (
-                                    <React.Fragment key={index}>
-                                        <div className={'w-1/6 mx-1.5 mt-1.5 flex flex-col items-center'}>
-                                            <img className={'border '} src={image.src}
-                                                 style={{'width': '720px', 'height': 'auto'}}/>
-                                            <button
-                                                className={'bg-rose-500 hover:bg-rose-700 mt-1 py-1 text-xs w-4/6 mx-auto rounded text-white'}
-                                                onClick={() => deleteImage(index, image.src)}>
-                                                삭제
-                                            </button>
-                                            <input onChange={(e) => changeSeq(Number(e.target.value), image.id)}
-                                                   value={image.seq} placeholder={'이미지 순서'} type="number" min={0}
-                                                   className="pl-2 text-center text-md border rounded mt-1 placeholder-blue w-4/6 p-0 no-outline text-dusty-blue-darker"/>
-                                        </div>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <article className={'flex w-full flex-wrap items-center py-4'}>
+                            <Droppable droppableId="one">
+                                {(magic) => (
+                                    <div className={'grid grid-rows-4 grid-flow-col gap-4'} ref={magic.innerRef} {...magic.droppableProps}>
+                                        {
+                                            imageList?.map((image, index) => {
+                                                return (
+                                                    <DragabbleCard key={image.id} image={image} index={index}
+                                                                   deleteImage={deleteImage}/>
+                                                )
+                                            })
+                                        }
+                                        {magic.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
 
-                                    </React.Fragment>
+                        </article>
+                    </DragDropContext>
 
-                                )
-                            })
-                        }
-                    </article>
+
                 </section>
                 <section className={'w-full'}>
                     <button className={'w-3/6 bg-blue-300 py-2 rounded hover:bg-blue-500'}
                             onClick={() => sortImage()}>이미지 재배열 하기
                     </button>
-                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'} onClick={() => update()}>수정하기</button>
+                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'}
+                            onClick={() => update()}>수정하기
+                    </button>
                 </section>
             </section>
 

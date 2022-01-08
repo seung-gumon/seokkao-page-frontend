@@ -62,14 +62,7 @@ const EpisodeAdmin = () => {
             episodeId: Number(episodeId)
         },
         onCompleted: data => {
-            const contents = data.adminFindByIdEpisode?.contents.map((contents, index) => {
-                return {
-                    id: index,
-                    src: contents,
-                    seq: index + 1
-                }
-            })
-            setImageList(contents);
+            setImageList(data.adminFindByIdEpisode?.contents ?? []);
         }
     });
 
@@ -92,19 +85,18 @@ const EpisodeAdmin = () => {
     });
 
     const update = async () => {
-        const contents = imageList?.map(image => image.src);
         await updateEpisode({
             variables: {
                 episodeInput: {
                     id: data?.adminFindByIdEpisode?.id,
-                    contents
+                    contents: imageList
                 }
             }
         })
     }
 
 
-    const [imageList, setImageList] = useState<IImages[] | undefined>([]);
+    const [imageList, setImageList] = useState<string[]>([]);
     const [fetchImage, setFetchImage] = useState<boolean>(false);
 
 
@@ -144,11 +136,7 @@ const EpisodeAdmin = () => {
                 const imgSrc = await convertToFileAndUploadImage(img);
                 setFetchImage(false);
                 if (imageList) {
-                    setImageList((prev) => prev && [...prev, {
-                        id: imageList.length + 1,
-                        src: imgSrc,
-                        seq: imageList?.length + 1
-                    }]);
+                    setImageList((prev) => prev && [...prev, imgSrc]);
                 }
 
             });
@@ -184,46 +172,27 @@ const EpisodeAdmin = () => {
     }
 
 
-    const changeSeq = (seq: number, imageId: number) => {
-        const newImageArr = imageList?.map((image, mapIndex) => {
-            if (image.id === imageId) {
-                return {
-                    ...image,
-                    seq
-                }
-            } else {
-                return image
-            }
-        });
-        setImageList(newImageArr)
-    }
-
-
-    const sortImage = () => {
-        const newArr = imageList?.sort((a, b) => {
-            if (a.seq < b.seq) {
-                return -1;
-            }
-            if (a.seq > b.seq) {
-                return 1;
-            }
-            return 0;
-        });
-
-        if (newArr) {
-            setImageList(() => [...newArr]);
-        }
-    }
-
-
     const onDragEnd = ({draggableId, destination, source}: DropResult) => {
         if (!destination) return;
-        // setToDos((oldToDos) => {
-        //     const toDosCopy = [...oldToDos];
-        //     toDosCopy.splice(source.index, 1);
-        //     toDosCopy.splice(destination?.index, 0, draggableId);
-        //     return toDosCopy;
-        // });
+        if (!imageList) return;
+
+        // 같은 자리에 가져다 두었다면 그냥 리턴
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+
+        // @ts-ignore
+        setImageList((oldToDos) => {
+            if (!destination) return;
+            if (!oldToDos) return;
+            const toDosCopy = [...oldToDos];
+            toDosCopy.splice(source.index, 1);
+            toDosCopy.splice(destination?.index, 0, draggableId);
+            return toDosCopy;
+        });
     };
 
 
@@ -290,34 +259,26 @@ const EpisodeAdmin = () => {
                     }
 
 
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <article className={'flex w-full flex-wrap items-center py-4'}>
-                            <Droppable droppableId="one">
+                    <DragDropContext onDragEnd={onDragEnd} >
+                            <Droppable droppableId="one" direction={'horizontal'}>
                                 {(magic) => (
-                                    <div className={'grid grid-rows-4 grid-flow-col gap-4'} ref={magic.innerRef} {...magic.droppableProps}>
-                                        {
-                                            imageList?.map((image, index) => {
-                                                return (
-                                                    <DragabbleCard key={image.id} image={image} index={index}
-                                                                   deleteImage={deleteImage}/>
-                                                )
-                                            })
+                                    <div ref={magic.innerRef} {...magic.droppableProps}>
+                                        {imageList?.map((image, index) =>
+                                            <DragabbleCard key={index}
+                                                           image={image}
+                                                           index={index}
+                                                           deleteImage={deleteImage}/>)
                                         }
                                         {magic.placeholder}
                                     </div>
                                 )}
                             </Droppable>
-
-                        </article>
                     </DragDropContext>
 
 
                 </section>
-                <section className={'w-full'}>
-                    <button className={'w-3/6 bg-blue-300 py-2 rounded hover:bg-blue-500'}
-                            onClick={() => sortImage()}>이미지 재배열 하기
-                    </button>
-                    <button className={'w-3/6 bg-lime-300 py-2 rounded hover:bg-lime-500'}
+                <section className={'w-full bg-white'}>
+                    <button className={'w-full bg-lime-300 py-2 rounded hover:bg-lime-500'}
                             onClick={() => update()}>수정하기
                     </button>
                 </section>

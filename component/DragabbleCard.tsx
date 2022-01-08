@@ -5,32 +5,32 @@ import React from "react";
 
 
 interface IDragbbleCard {
-    image: IImages,
+    image: string,
     index: number,
     deleteImage: Function
 }
 
 const DragabbleCard: NextPage<IDragbbleCard> = ({image, index, deleteImage}) => {
     return (
-        <Draggable key={"" + image.id} draggableId={"" + image.id} index={index}>
+        <Draggable key={image} draggableId={image} index={index}>
             {(magic) => (
-                <div key={index} ref={magic.innerRef}
-                     {...magic.dragHandleProps}
-                     {...magic.draggableProps}>
-                    <div className={'mt-1.5 w-1/12'}>
-                        <img className={'border '} src={image.src}/>
+                <div
+                    className={'float-left w-3/12'}
+                    ref={magic.innerRef}
+                    {...magic.dragHandleProps}
+                    {...magic.draggableProps}>
+                    <div className={'mt-1.5'}>
+                        <img className={'border'} src={image} />
                         <button
-                            className={'bg-rose-500 hover:bg-rose-700 mt-1 py-1 text-xs w-4/6 mx-auto rounded text-white'}
-                            onClick={() => deleteImage(index, image.src)}>
+                            className={'bg-rose-500 hover:bg-rose-700 mt-1 py-1 text-xs w-4/6 block my-2 mx-auto rounded text-white'}
+                            onClick={() => deleteImage(index, image)}>
                             삭제
                         </button>
                     </div>
                 </div>
-
-
             )}
         </Draggable>
     )
 }
 
-export default DragabbleCard
+export default React.memo(DragabbleCard)
